@@ -1,5 +1,9 @@
 \documentclass{article}
+% \usepackage[headsepline]{scrlayer-scrpage}
 
+% \ihead{Levin}
+% \ohead{\thepage}
+% \pagestyle{scrheadings}
 \usepackage{amsmath,amsfonts,amsthm,amssymb,amsopn,bm}
 \usepackage[margin=.9in]{geometry}
 \usepackage{graphicx}
@@ -43,8 +47,8 @@
 \begin{document}
 \title{Homework \#0}
 \author{\normalsize{Spring 2020, CSE 546: Machine Learning}\\
-\normalsize{Roman Levin} \\
-\normalsize{1721898} \\
+\normalsize{\bf Roman Levin} \\
+\normalsize{\bf 1721898} \\
 }
 \maketitle
 
@@ -52,6 +56,29 @@
 \subsection*{Probability and Statistics}
 A.1 \points{2} (Bayes Rule, from Murphy exercise 2.4.) After your yearly checkup, the doctor has bad news and good news. The bad news is that you tested positive for a serious disease, and that the test is 99\% accurate (i.e., the probability of testing positive given that you have the disease is 0.99, as is the probability of testing negative given that you dont have the disease). The good news is that this is a rare disease, striking only one in 10,000 people. What are the chances that you actually have the disease? (Show your calculations as well as giving the final result.)\\
 \\
+\noindent\rule{\textwidth}{1pt}
+{\bf Solution:}\\
+\\
+Denote "+" the event of a positive test, denote "-" the event of a negative test, denote "disease" the event of having the disease, and denote "no disease" the event of not having the disease. Then, note that:
+\begin{itemize}
+    \item $\mathbb{P}(+\vert \text{disease}) = 0.99$
+    \item $\mathbb{P}(-\vert \text{no disease}) = 0.99 \Rightarrow \mathbb{P}(+\vert \text{no disease}) = 1 - \mathbb{P}(-\vert \text{no disease}) = 0.01$
+    \item $\mathbb{P}(\text{disease}) = 10^{-4} \Rightarrow \mathbb{P}(\text{no disease}) = 1 - \mathbb{P}(\text{disease}) = 0.9999$ 
+\end{itemize}
+By the total probability law, we can find:
+\begin{equation}\label{+}
+    \mathbb{P}(+) = \mathbb{P}(+\vert \text{disease})\mathbb{P}(\text{disease}) +  \mathbb{P}(+\vert \text{no disease})\mathbb{P}(\text{disease})  
+\end{equation}
+Then, using the equation \eqref{+} and Bayes rule, we obtain:
+\begin{equation}\boxed{
+\begin{split}
+    &\mathbb{P}(\text{disease} \vert +) = \frac{\mathbb{P}(+\vert \text{disease})\mathbb{P}( \text{disease})}{\mathbb{P}(+)} = \frac{\mathbb{P}(+\vert \text{disease})\mathbb{P}( \text{disease})}{\mathbb{P}(+\vert \text{disease})\mathbb{P}(\text{disease}) +  \mathbb{P}(+\vert \text{no disease})\mathbb{P}(\text{disease})} =\\
+    &= \frac{0.99\cdot0.0001}{0.99\cdot0.0001 + 0.01\cdot0.9999} = \frac{1}{102}
+\end{split}}
+\end{equation}
+
+\noindent\rule{\textwidth}{1pt}
+
 
 A.2 For any two random variables $X,Y$ the \emph{covariance} is
   defined as
@@ -59,13 +86,52 @@ A.2 For any two random variables $X,Y$ the \emph{covariance} is
   take on a discrete values if you find that is easier to work with.
 \begin{enumerate}
 \item \points{1} If $\E[Y|X=x] = x$ show that $\text{Cov}(X,Y) = \E[(X-\E[X])^2]$.  
+\\
+\\
+\noindent\rule{\textwidth}{1pt}
+{\bf Solution:}\\
+\\
+Probably, a better way to solve this would be to use iterated expectation and conditioning on $X$ as an RV (not on the event $X=x$), but I am not sure if $\E[Y|X] = X$ follows from the problem statement, so I will just assume $X$ and $Y$ are discrete RVs. Then:
+\begin{itemize}
+    \item By linearity of expectation: $\text{Cov}(X,Y)=\E[(X-\E[X])(Y-\E[Y])] = \E[XY] - \E[X\E[Y]] - \E[\E[X]Y] + \E[X]\E[Y] = \E[XY] - \E[X]\E[Y]$ 
+    
+    \item By the law of total expectation: $\E[XY] = \sum_x \mathbb{P}(X=x)\E[XY\vert X=x] = $\\$ =\sum_x \mathbb{P}(X=x)x\E[Y\vert X=x] = \sum_x \mathbb{P}(X=x)x^2 = \E[X^2]$
+    \item By the law of total expectation: $\E[Y] = \sum_x \mathbb{P}(X=x)\E[Y\vert X=x] = \sum_x \mathbb{P}(X=x)x = \E[X]$
+\end{itemize}
+Combining the above, we get:
+$$\text{Cov}(X,Y) = \E[X^2] - (\E[X])^2 = \E[(X-\E[X])^2] \qquad \Box$$
+
+
+
+\noindent\rule{\textwidth}{1pt}
+
 \item \points{1} If $X,Y$ are independent show that $\text{Cov}(X,Y)=0$.
+\\
+\\
+\noindent\rule{\textwidth}{1pt}
+{\bf Solution:}\\
+\begin{itemize}
+    \item In a. we have shown: $\text{Cov}(X,Y)= \E[XY] - \E[X]\E[Y]$ 
+    \item Since $X$ and $Y$ are independent: $\E[XY] = \sum_{x,y}\mathbb{P}(X=x, Y= y)xy = \sum_{x,y}\mathbb{P}(X=x)\mathbb{P}(Y= y)xy = \left(\sum_{y}\mathbb{P}(X=x)x\right)\left(\sum_{y}\mathbb{P}(Y= y)y\right) = \E[X]\E[Y]$
+\end{itemize}
+Combining the above, we get $$\text{Cov}(X,Y) = 0 \qquad \Box$$
+
+\noindent\rule{\textwidth}{1pt}
+
 \end{enumerate}
 
 
 A.3 Let $X$ and $Y$ be independent random variables with PDFs given by $f$ and $g$, respectively. Let $h$ be the PDF of the random variable $Z = X+Y$.
 \begin{enumerate}
 	\item \points{2} Show that $h(z) = \int_{-\infty}^\infty f(x) g( z - x ) d x $.  (If you are more comfortable with discrete probabilities, you can instead derive an analogous expression for the discrete case,  and then you should give a one sentence explanation as to why your expression is analogous to the continuous case.).
+	\\
+    \\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+
+
+    \noindent\rule{\textwidth}{1pt}
+	
 	\item \points{1} If $X$ and $Y$ are both independent and uniformly distributed on $[0,1]$ (i.e. $f(x)=g(x)=1$ for $x \in [0,1]$ and $0$ otherwise) what is $h$, the PDF of $Z=X+Y$?
 \end{enumerate}
 
