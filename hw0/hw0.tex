@@ -12,6 +12,21 @@
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{fancyhdr}
 \usepackage{multirow}
+
+\usepackage{pgfplots}
+
+% Some additional tweaking for this package can be made in the preamble. To change the size of each plot and also guarantee backwards compatibility (recommended) add the next line:
+
+\pgfplotsset{width=10cm,compat=1.9}
+
+% This changes the size of each pgfplot figure to 10 centimeters, which is huge; you may use different units (pt, mm, in). The compat parameter is for the code to work on the package version 1.9 or later.
+
+% Since LaTeX was not initially conceived with plotting capabilities in mind, when there are several pgfplot figures in your document or they are very complex, it takes a considerable amount of time to render them. To improve the compiling time you can configure the package to export the figures to separate PDF files and then import them into the document, add the code shown below to the preamble:
+
+\usepgfplotslibrary{external}
+
+\tikzexternalize 
+
 \newcommand{\field}[1]{\mathbb{#1}}
 \newcommand{\1}{\mathbf{1}}
 \newcommand{\I}{\mathbbm{1}}
@@ -287,7 +302,7 @@ For each matrix $A$ and $B$,
 \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
-    Let $a_i$ and $b_i$ be the coli
+    Let $a_i$ be the columns of A and $b_i$ be the columns of $B$.\\
     For A, observe that $-3a_1 + a_2 + a_3 = 0$ but any two columns are obviously linearly independent, so 
     $$
     \boxed{\rank{A} = 2}
@@ -301,35 +316,161 @@ For each matrix $A$ and $B$,
 \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
-
-
+    For $A$, since its rank is 2 and $a_1, a_2$ are linearly independent, we can take $\{a_1, a_2\}$ as the basis for its column space.\\
+    For $B$, since its rank is 2 and $b_1, b_2$ are linearly independent, we can take $\{b_1, b_2\}$ as the basis for its column space.
+    
     \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
 A.8 (Linear equations) Let $A = \begin{bmatrix} 0 & 2 & 4 \\ 2 & 4 & 2 \\ 3 & 3 & 1 \end{bmatrix}$, $b = \begin{bmatrix} -2 & -2 & -4 \end{bmatrix}^T$, and $c=\begin{bmatrix} 1 & 1 & 1 \end{bmatrix}^T$.
 \begin{enumerate}
 	\item \points{1} What is $Ac$?
-	\item \points{2} What is the solution to the linear system $Ax = b$? (Show your work).
+	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    $$\boxed{Ac = \begin{bmatrix} 6 & 8 & 7 \end{bmatrix}^T}$$
+    
+    \noindent\rule{\textwidth}{1pt}
+    
+	\item \points{2} What is the solution to the linear system $Ax = b$? (Show your work).	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    \begin{align*}
+        &\left[ \begin{array} {ccc|c}
+        0 & 2 & 4 & -2\\ 
+        2 & 4 & 2 & -2\\ 
+        3 & 3 & 1 & -4
+        \end{array}\right] 
+        \Rightarrow
+        \left[ \begin{array} {ccc|c}
+        1 & 2 & 1 & -1\\ 
+        0 & 2 & 4 & -2\\ 
+        3 & 3 & 1 & -4
+        \end{array}\right]
+        \Rightarrow
+        \left[ \begin{array} {ccc|c}
+        1 & 2 & 1 & -1\\ 
+        0 & 1 & 2 & -1\\ 
+        0 & -3 & -2 & -1
+        \end{array}\right]
+        \Rightarrow
+        \left[ \begin{array} {ccc|c}
+        1 & 0 & -3 & 1\\ 
+        0 & 1 & 2 & -1\\ 
+        0 & 0 & 4 & -4
+        \end{array}\right]
+        \Rightarrow
+        \left[ \begin{array} {ccc|c}
+        1 & 0 & 0 & -2\\ 
+        0 & 1 & 0 & 1\\ 
+        0 & 0 & 1 & -1
+        \end{array}\right]
+    \end{align*}
+    So 
+    $$
+    \boxed{x = [-2, 1, -1]^T}
+    $$
+    
+    \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
 A.9 (Hyperplanes) Assume $w$ is an $n$-dimensional vector and $b$ is a scalar. A hyperplane in $\R^n$ is the set $\{x : x\in \R^n,\text{ s.t. } w^T x + b = 0\}$.
 \begin{enumerate}
-	\item \points{1} ($n=2$ example) Draw the hyperplane for $w=[-1,2]^T$, $b=2$? Label your axes.
-	\item \points{1} ($n=3$ example) Draw the hyperplane for $w=[1,1,1]^T$, $b=0$? Label your axes.
+	\item \points{1} ($n=2$ example) Draw the hyperplane for $w=[-1,2]^T$, $b=2$? Label your axes.\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    
+	\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = $x_1$,
+    ylabel = {$x_2$},
+    width=7cm,height=7cm
+]
+%Below the red parabola is defined
+\addplot [
+    domain=-10:10, 
+    samples=100, 
+    color=red,
+]
+{-1 + x/2};
+\addlegendentry{$-x_1 + 2x_2 + 2 = 0$}
+
+\end{axis}
+\end{tikzpicture}
+
+	\noindent\rule{\textwidth}{1pt}
+	
+	\item \points{1} ($n=3$ example) Draw the hyperplane for $w=[1,1,1]^T$, $b=0$? Label your axes.\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    
+	\begin{tikzpicture}
+    \begin{axis}[
+    width=7cm,height=8cm,
+        xlabel = $x_1$,
+    ylabel = {$x_2$},
+    zlabel = $x_3$]
+    \addplot3[
+        surf,
+    ]
+    {-(x+y)};
+    \addlegendentry{$x_1 + x_2 + x_3 = 0$}
+    \end{axis}
+    \end{tikzpicture}
+	
+	    \noindent\rule{\textwidth}{1pt}
+	    
 	\item \points{2} Given some $x_0 \in \R^n$, find the \emph{squared distance} to the hyperplane defined by $w^T x + b=0$.
 	In other words, solve the following optimization problem:
 	\begin{align*}
 	\min_x& \|x_0 - x \|^2\\
 	\text{s.t. }&w^Tx +b = 0
 	\end{align*}
-	(Hint: if $\widetilde{x}_0$ is the minimizer of the above problem, note that $\| x_0 - \widetilde{x}_0 \| = | \frac{w^T(x_0 - \widetilde{x}_0)}{\|w\|} |$. What is $w^T \widetilde{x}_0$?)
+	(Hint: if $\widetilde{x}_0$ is the minimizer of the above problem, note that $\| x_0 - \widetilde{x}_0 \| = | \frac{w^T(x_0 - \widetilde{x}_0)}{\|w\|} |$. What is $w^T \widetilde{x}_0$?)\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Let $x^*$ be the minimizer of the optimization problem, that is, let $x^*$ be the projection of $x_0$ onto the hyperplane. Then, the distance from $x_0$ to the hyperplane would be given (as the hint states) by the difference of the lengths of the projections of $x_0$ and $x^*$ onto the normal vector $w$:
+    $$
+    \|x_0 - x^*\| = \left| \frac{w^Tx_0}{\|w\|} - \frac{w^Tx^*}{\|w\|}\right| = \left|\frac{w^T(x_0 - x^*)}{\|w\|} \right|
+    $$
+    Since $x^*$ lies in the hyperplane, we have $w^Tx^* + b = 0$. Thus:
+    $$
+    \boxed{
+    \|x_0 - x^*\|^2 = \left|\frac{w^Tx_0 + b}{\|w\|} \right|^2
+    }
+    $$
+    \noindent\rule{\textwidth}{1pt}
+    
 \end{enumerate} 
 
 A.10 For possibly non-symmetric $\mat{A}, \mat{B} \in \R^{n \times n}$ and $c \in \R$, let $f(x, y) = x^T \mat{A} x + y^T \mat{B} x + c$. Define $\nabla_z f(x,y) = \begin{bmatrix} \frac{\partial f(x,y)}{\partial z_1} & \frac{\partial f(x,y)}{\partial z_2} & \dots & \frac{\partial f(x,y)}{\partial z_n} \end{bmatrix}^T$.  
 \begin{enumerate}
 	\item \points{2} Explicitly write out the function $f(x, y)$ in terms of the components $A_{i,j}$ and $B_{i,j}$ using appropriate summations over the indices.
-	\item \points{2} What is $\nabla_x f(x,y)$ in terms of the summations over indices \emph{and} vector notation?
+	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+
+    \noindent\rule{\textwidth}{1pt}
+	\item \points{2} What is $\nabla_x f(x,y)$ in terms of the summations over indices \emph{and} vector notation?\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+
+    \noindent\rule{\textwidth}{1pt}
 	\item \points{2} What is $\nabla_y f(x,y)$ in terms of the summations over indices \emph{and} vector notation?
+	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+
+    \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
 B.2 \points{1} The \textit{trace} of a matrix is the sum of the diagonal entries; $Tr(A) = \sum_i A_{ii}$. If $A\in\mathbb{R}^{n\times m}$ and $B\in\mathbb{R}^{m\times n}$, show that $Tr(AB) = Tr(BA)$.\\
