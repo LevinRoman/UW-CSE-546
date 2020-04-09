@@ -4,6 +4,7 @@
 % \ihead{Levin}
 % \ohead{\thepage}
 % \pagestyle{scrheadings}
+\usepackage{bbm}
 \usepackage{amsmath,amsfonts,amsthm,amssymb,amsopn,bm}
 \usepackage[margin=.9in]{geometry}
 \usepackage{graphicx}
@@ -13,8 +14,12 @@
 \usepackage{multirow}
 \newcommand{\field}[1]{\mathbb{#1}}
 \newcommand{\1}{\mathbf{1}}
+\newcommand{\I}{\mathbbm{1}}
 \newcommand{\E}{\mathbb{E}} 
+\newcommand{\V}{\mathbb{V}} 
 \renewcommand{\P}{\mathbb{P}}
+ \newcommand{\ind}{\perp\!\!\!\perp}
+ \DeclareMathOperator{\rank}{rank}
 \newcommand{\R}{\field{R}} % real domain
 % \newcommand{\C}{\field{C}} % complex domain
 \newcommand{\F}{\field{F}} % functional domain
@@ -128,19 +133,70 @@ A.3 Let $X$ and $Y$ be independent random variables with PDFs given by $f$ and $
     \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
+    \begin{itemize}
+        \item Joint PDF of $X,Y$: $X \ind Y \Rightarrow f_{X,Y}(x,y) = f(x)g(y)$
+        \item $F_Z(z) = \P(Z\le z) = \P(X+Y \le z) = \iint_{x+y \le z} f_{X,Y}(x,y)dx dy = \int_{-\infty}^{\infty}\left(\int_{-\infty}^{z-x} f(x)g(y)dy\right)dx = \int_{-\infty}^{\infty}f(x)\left(\int_{-\infty}^{z-x} g(y)dy\right)dx =  \int_{-\infty}^{\infty}f(x)F_Y(z-x)dx$
+        \item $h(z) = \frac{d}{dz} F_Z(z) = \frac{d}{dz}\int_{-\infty}^{\infty}f(x)F_Y(z-x)dx = \int_{-\infty}^{\infty}f(x)\frac{d}{dz}F_Y(z-x)dx = \int_{-\infty}^{\infty}f(x)g(z-x)dx \qquad \Box$
+    \end{itemize}
 
 
     \noindent\rule{\textwidth}{1pt}
 	
 	\item \points{1} If $X$ and $Y$ are both independent and uniformly distributed on $[0,1]$ (i.e. $f(x)=g(x)=1$ for $x \in [0,1]$ and $0$ otherwise) what is $h$, the PDF of $Z=X+Y$?
+	\\
+    \\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Notation: $\I_{\{\cdot\}}$ stands for an indicator function.
+    \begin{itemize}
+        \item $g(x) = f(x) = \I_{ \{x \in [0,1] \} }$
+        \item Plugging in to the result from a.: 
+        \begin{equation}
+        \begin{split}
+        h(z)  & = \int_{-\infty}^{\infty}\I_{ \{x \in [0,1] \}}\I_{ \{z-x \in [0,1] \}}dx = \int_{-\infty}^{\infty}\I_{ \{x \in [0,1] \}}(\I_{ \{x \in (-\infty,z] \}}+\I_{ \{x \in [z-1,\infty) \}})dx =\\
+        & = \int_0^1\I_{ \{x \in (-\infty,z] \}}dx + \int_0^1 \I_{ \{x \in [z-1,\infty) \}}dx = z\I_{ \{z \in [0,1] \}} + (2-z)\I_{ \{z-1 \in (0,1] \}}
+        \end{split}
+        \end{equation}
+    \item This gives finally:
+    $$
+    \boxed{
+    h(z) = 
+    \begin{cases}
+    z, &z \in [0,1] \\
+    2-z, &z \in (1,2] \\
+    0, &\text{o.w.}
+    \end{cases}
+    }
+    $$
+    \end{itemize}
+    \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
 A.4 \points{1} A random variable $X \sim \mathcal{N}(\mu, \sigma^2)$ is Gaussian distributed with mean $\mu$ and variance $\sigma^2$. Given that for any $a,b \in \R$, we have that $Y = aX + b$ is also Gaussian, find $a,b$ such that $Y \sim \mathcal{N}(0,1)$.\\
-
+\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Consider $$\boxed{a = \frac{1}{\sigma}, b = \frac{-\mu}{\sigma}}$$ 
+    Then, since multiplying an RV by a constant multiplies the mean by the constant and the variance by the squared constant and since adding a constant to an RV shifts the mean by that constant and does not affect the variance:
+    $$
+    aX \sim \mathcal{N}(\frac{\mu}{\sigma}, 1) \text{  and  } Y \sim \mathcal{N}(0,1) \qquad \Box
+    $$
+    \noindent\rule{\textwidth}{1pt}
 A.5 \points{2} For a random variable $Z$, its mean and variance are defined as $\E[Z]$ and $\E[(Z-\E[Z])^2]$, respectively.
 Let $X_1,\dots,X_n$ be independent and identically distributed random variables, each with mean $\mu$ and variance $\sigma^2$. 
 If we define $\widehat{\mu}_n = \frac{1}{n} \sum_{i=1}^n X_i$, what is the mean and variance of $\sqrt{n}(\widehat{\mu}_n - \mu)$?\\
-
+\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    \begin{itemize}
+    \item $\E[\sum_{i=1}^n X_i] = \sum_{i=1}^n \mu = \mu n$ and $\V[\sum_{i=1}^n X_i] = \sum_{i=1}^n \sigma^2 = \sigma^2 n$ since $X_i$ are iid.
+    
+    \item So $\E[\widehat{\mu}_n] = \mu$ and $\V[\widehat{\mu}_n] = \sigma^2/n$ (by the same argument with A.5).
+    \item Then, again by the same argument with A.5: $$\boxed{\E(\sqrt{n}(\widehat{\mu}_n - \mu)) = 0, \V(\sqrt{n}(\widehat{\mu}_n - \mu)) = (\sqrt{n})^2\sigma^2/n = \sigma^2}$$
+    \end{itemize}
+    \noindent\rule{\textwidth}{1pt}
 A.6 If $f(x)$ is a PDF, the cumulative distribution function (CDF)
   is  defined as $F(x) = \int_{-\infty}^x f(y) dy$.  For any function
   $g : \R \rightarrow \R$ and random variable $X$ with PDF $f(x)$,
@@ -157,22 +213,97 @@ A.6 If $f(x)$ is a PDF, the cumulative distribution function (CDF)
   You may use your answers to the previous problem.
   \begin{enumerate}
   \item \points{1} For any $x$, what is $\E[ \widehat{F}_n(x) ]$?
+  \\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    $$\boxed{\E[ \widehat{F}_n(x) ] = \E [\frac{1}{n} \sum_{i=1}^n \1\{X_i \leq
+  x\}] = \frac{1}{n} \sum_{i=1}^n \E [\1\{X_i \leq
+  x\}] = \frac{1}{n} \sum_{i=1}^n F(x) = F(x)}$$
+    
+    \noindent\rule{\textwidth}{1pt}
   \item \points{1} For any $x$, the variance of $\widehat{F}_n(x)$ is $\E[ ( \widehat{F}_n(x) -
-    F(x) )^2 ]$.  Show that $\textrm{Variance}(\widehat{F}_n(x)) = \frac{F(x)(1-F(x))}{n}$. \\
+    F(x) )^2 ]$.  Show that $\textrm{Variance}(\widehat{F}_n(x)) = \frac{F(x)(1-F(x))}{n}$.
+      \\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Since $X_i$ are iid, then $\1\{X_i < x\}$ are also independent as functions of $X_i$, thus we can write (also observing that $(\1\{X_i \leq x\})^2 = \1\{X_i \leq x\}$):
+    \begin{equation}
+    \begin{split}    
+    \V[\widehat{F}_n(x)] &= \V [\frac{1}{n} \sum_{i=1}^n \1\{X_i \leq x\}] = 
+    \frac{1}{n^2} \sum_{i=1}^n \V[\1\{X_i \leq x\}] =
+    \frac{1}{n^2} \sum_{i=1}^n \left(\E[(\1\{X_i \leq x\})^2] - \E[\1\{X_i \leq x\}]^2\right) = \\
+    & = \frac{1}{n^2} \sum_{i=1}^n \left(\E[\1\{X_i \leq x\}] - \E[\1\{X_i \leq x\}]^2\right) = \frac{1}{n^2} \sum_{i=1}^n \left(F(x) - F(x)^2\right) = \frac{F(x)(1-F(x))}{n} \qquad \Box
+    \end{split}
+    \end{equation}
+    
+    
+    \noindent\rule{\textwidth}{1pt}
 %    (Hint: Consider what independence implies.)
   \item \points{1} Using your answer to b, show that
     for all $x\in \R$, we have  $\displaystyle \E[ ( \widehat{F}_n(x) - F(x) )^2 ] \leq \tfrac{1}{4n}$.  
+      \\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    \begin{itemize}
+        \item Note that $\E[\widehat{F}_n(x) - F(x)] = 0$ (from a.).
+        \item Therefore  $\V[\widehat{F}_n(x) - F(x)] = \E[(\widehat{F}_n(x) - F(x))^2] = \frac{F(x)(1-F(x))}{n}$ (by b.)
+        \item Since $F(x) \in [0,1] \forall x$, $\frac{F(x)(1-F(x))}{n}$ is maximized at $F(x) = \frac{1}{2}$ (it is just a parabola).
+        \item Therefore $$\boxed{\E[(\widehat{F}_n(x) - F(x))^2] = \frac{F(x)(1-F(x))}{n} \leq \frac{0.5(1-0.5)}{n} = \frac{1}{4n} \qquad \Box}
+        $$
+    \end{itemize}    
+    
+    \noindent\rule{\textwidth}{1pt}
   \end{enumerate} 
 
 B.1  \points{1} Let $X_1,\dots,X_n$ be $n$ independent and identically distributed random variables drawn unfiromly at random from $[0,1]$. If $Y = \max\{X_1,\dots,X_n\}$ then find $\E[Y]$.\\
-
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Let $$F_X(x) = 
+    \begin{cases}
+    1, & x>1\\
+    x, & x\in[0,1]\\
+    0, & x<0
+    \end{cases}
+    $$ be the common CDF of $X_i$.
+    \begin{itemize}
+        \item Since $X_i$ are iid: $F_Y(y) = \P(Y \leq y) = \prod_{i=1}^n\P(X_i \le y) = \prod_i F_X(y) = F_X(y)^n$
+        \item The PDF of Y:$f_Y(y) = \frac{d}{dy}F_Y(y) = \begin{cases}
+    ny^{n-1}, & y\in[0,1]\\
+    0, & \text{o.w}
+    \end{cases}  $
+    \item $$\boxed{\E[Y] = \int_0^1 yny^{n-1}dy = n\int_0^1 y^{n}dy = \frac{n}{n+1} }$$
+    \end{itemize}
+    \noindent\rule{\textwidth}{1pt}
 
 \subsection*{Linear Algebra and Vector Calculus}
 A.7 (Rank) Let $A = \begin{bmatrix} 1 & 2 & 1 \\ 1 & 0 & 3 \\ 1 & 1 & 2 \end{bmatrix}$ and $B = \begin{bmatrix} 1 & 2 & 3 \\ 1 & 0 & 1 \\ 1 & 1 & 2 \end{bmatrix}$.
 For each matrix $A$ and $B$,
 \begin{enumerate} 
-	\item \points{2} what is its rank? 
-	\item \points{2} what is a (minimal size) basis for its column span?
+	\item \points{2} what is its rank?\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Let $a_i$ and $b_i$ be the coli
+    For A, observe that $-3a_1 + a_2 + a_3 = 0$ but any two columns are obviously linearly independent, so 
+    $$
+    \boxed{\rank{A} = 2}
+    $$
+    For B, observe that $b_3 - b_2 = b_1$ but any two columns are obviously linearly independent, so 
+    $$
+    \boxed{\rank{B} = 2}
+    $$
+    \noindent\rule{\textwidth}{1pt}
+	\item \points{2} what is a (minimal size) basis for its column span?\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+
+
+    \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
 A.8 (Linear equations) Let $A = \begin{bmatrix} 0 & 2 & 4 \\ 2 & 4 & 2 \\ 3 & 3 & 1 \end{bmatrix}$, $b = \begin{bmatrix} -2 & -2 & -4 \end{bmatrix}^T$, and $c=\begin{bmatrix} 1 & 1 & 1 \end{bmatrix}^T$.
