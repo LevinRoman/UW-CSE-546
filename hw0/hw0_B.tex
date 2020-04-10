@@ -1,0 +1,185 @@
+\documentclass{article}
+% \usepackage[headsepline]{scrlayer-scrpage}
+
+% \ihead{Levin}
+% \ohead{\thepage}
+% \pagestyle{scrheadings}
+\usepackage{bbm}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,amsopn,bm}
+\usepackage[margin=.9in]{geometry}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{pythonhighlight}
+\usepackage{pgfplots}
+
+% Some additional tweaking for this package can be made in the preamble. To change the size of each plot and also guarantee backwards compatibility (recommended) add the next line:
+
+\pgfplotsset{width=10cm,compat=1.9}
+
+% This changes the size of each pgfplot figure to 10 centimeters, which is huge; you may use different units (pt, mm, in). The compat parameter is for the code to work on the package version 1.9 or later.
+
+% Since LaTeX was not initially conceived with plotting capabilities in mind, when there are several pgfplot figures in your document or they are very complex, it takes a considerable amount of time to render them. To improve the compiling time you can configure the package to export the figures to separate PDF files and then import them into the document, add the code shown below to the preamble:
+
+\usepgfplotslibrary{external}
+
+\tikzexternalize 
+
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\I}{\mathbbm{1}}
+\newcommand{\E}{\mathbb{E}} 
+\newcommand{\V}{\mathbb{V}} 
+\renewcommand{\P}{\mathbb{P}}
+ \newcommand{\ind}{\perp\!\!\!\perp}
+ \DeclareMathOperator{\rank}{rank}
+\newcommand{\R}{\field{R}} % real domain
+% \newcommand{\C}{\field{C}} % complex domain
+\newcommand{\F}{\field{F}} % functional domain
+
+\newcommand{\T}{^{\textrm T}} % transpose
+
+\def\diag{\text{diag}}
+
+%% operator in linear algebra, functional analysis
+\newcommand{\inner}[2]{#1\cdot #2}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\twonorm}[1]{\|#1\|_2^2}
+% operator in functios, maps such as M: domain1 --> domain 2
+\newcommand{\Map}[1]{\mathcal{#1}}
+\renewcommand{\theenumi}{\alph{enumi}} 
+
+\newcommand{\Perp}{\perp \! \! \! \perp}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand{\vct}[1]{\boldsymbol{#1}} % vector
+\newcommand{\mat}[1]{\boldsymbol{#1}} % matrix
+\newcommand{\cst}[1]{\mathsf{#1}} % constant
+\newcommand{\ProbOpr}[1]{\mathbb{#1}}
+\newcommand{\points}[1]{\small\textcolor{magenta}{\emph{[#1 points]}} \normalsize}
+\date{{}}
+
+\setlength\parindent{0px}
+
+\begin{document}
+\title{Homework \#0}
+\author{\normalsize{Spring 2020, CSE 546: Machine Learning}\\
+\normalsize{\bf Roman Levin} \\
+\normalsize{\bf 1721898} \\
+}
+\maketitle
+Collaborators: compared answers with Tyler Chen, Diya Sashidhar, Katherine Owens
+\section*{Problems B}
+\subsection*{Probability and Statistics}
+
+B.1  \points{1} Let $X_1,\dots,X_n$ be $n$ independent and identically distributed random variables drawn unfiromly at random from $[0,1]$. If $Y = \max\{X_1,\dots,X_n\}$ then find $\E[Y]$.\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    Let $$F_X(x) = 
+    \begin{cases}
+    1, & x>1\\
+    x, & x\in[0,1]\\
+    0, & x<0
+    \end{cases}
+    $$ be the common CDF of $X_i$.
+    \begin{itemize}
+        \item Since $X_i$ are iid: $F_Y(y) = \P(Y \leq y) = \prod_{i=1}^n\P(X_i \le y) = \prod_i F_X(y) = F_X(y)^n$
+        \item The PDF of Y:$f_Y(y) = \frac{d}{dy}F_Y(y) = \begin{cases}
+    ny^{n-1}, & y\in[0,1]\\
+    0, & \text{o.w}
+    \end{cases}  $
+    \item $$\boxed{\E[Y] = \int_0^1 yny^{n-1}dy = n\int_0^1 y^{n}dy = \frac{n}{n+1} }$$
+    \end{itemize}
+    \noindent\rule{\textwidth}{1pt}
+
+\subsection*{Linear Algebra and Vector Calculus}
+
+B.2 \points{1} The \textit{trace} of a matrix is the sum of the diagonal entries; $Tr(A) = \sum_i A_{ii}$. If $A\in\mathbb{R}^{n\times m}$ and $B\in\mathbb{R}^{m\times n}$, show that $Tr(AB) = Tr(BA)$.	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    \begin{itemize}
+        \item Note that $(AB)_{ii} = \sum_{j=1}^m A_{ij}B_{ji}, \quad (BA)_{jj} = \sum_{i=1}^n B_{ji}A_{ij}$
+        \item Then: 
+        $$
+        Tr(AB) = \sum_{i=1}^n(AB)_{ii} = \sum_{i=1}^n\sum_{j=1}^m A_{ij}B_{ji} =
+        \sum_{j=1}^m\sum_{i=1}^n B_{ji}A_{ij} = \sum_{j=1}^m(BA)_{jj} = Tr(BA) \qquad \Box
+        $$
+    \end{itemize}        
+
+
+    \noindent\rule{\textwidth}{1pt}
+
+B.3 \points{1} Let $v_1,\dots,v_n$ be a set of non-zero vectors in $\mathbb{R}^d$. Let $V = [v_1,\dots,v_n]$ be the vectors concatenated. 
+    \begin{enumerate}
+        \item What is the minimum and maximum rank of $\sum_{i=1}^n v_i v_i^T$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Note that $\sum_{i=1}^n v_i v_i^T = VV^T$. Since the $v_i$ are nonzero, the minimum rank cannot be zero (since only zero matrix is of zero rank), so we have:
+            $$
+            \boxed{ 1 \le \rank VV^T \le \rank V \le \min(n,d)}
+            $$
+            An example of the minimum rank 1 would be to take $V$ with all the columns equal to the same vector, then both $V$ and $VV^T$ would be rank 1.
+            An example of the maximum rank would be
+            \begin{itemize}
+                \item For $n >= d$: let $V$ be a matrix with $n$ orthonormal columns, then $VV^T$ and $V$ would be full rank.
+                \item For $d >= n$: let $V$ be a matrix with $d$ orthonormal rows, then $VV^T$ and $V$ would be full rank.
+            \end{itemize}
+            (In fact, it can be shown that $\rank VV^T = \rank V$ by taking the reduced SVD of V and obtaining the SVD of $VV^T$ with the same number of nonzero singular values which is equal to rank.
+            $$
+            V = \hat U \hat \Sigma \hat V^T \Rightarrow VV^T = \hat U \hat \Sigma \hat V^T \hat V \hat \Sigma \hat U^T = \hat U \hat \Sigma^2 \hat U^T
+            $$
+            Now, $\hat \Sigma$ and $\hat \Sigma^2$ have the same number of nonzero elements, so $\rank VV^T = \rank V \qquad \Box$)
+            
+            \noindent\rule{\textwidth}{1pt}
+        \item What is the minimum and maximum rank of $V$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Again, since $v_i$ are nonzero, we cannot have zero rank. The full rank would be $\min(d,n)$ (by definition). Examples are given in a.
+            $$ 
+            \boxed{1 \le \rank V \le \min(d,n)}
+            $$
+        
+            \noindent\rule{\textwidth}{1pt}
+        \item Let $A \in \mathbb{R}^{D \times d}$ for $D > d$. What is the minimum and maximum rank of $\sum_{i=1}^n (A v_i) (A v_i)^T$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Note that $\sum_{i=1}^n (A v_i) (A v_i)^T = (AV)(AV)^T$. Then, since $D>d$:
+            $$
+            \boxed{ 0 \le \rank(AV)(AV)^T \le \rank(AV) \le \min(\rank A, \rank V) \le \min(n,d)}
+            $$
+            For rank 0 take zero $A$, for rank $\min(n,d)$ take full-rank $V$ and full-rank $A$ (because in the latter case $AV$ is full rank and so is $(AV)(AV)^T$ by a.).
+        
+            \noindent\rule{\textwidth}{1pt}
+        \item What is the minimum and maximum rank of $AV$? What if $V$ is rank $d$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            \begin{itemize}
+            \item
+            $$
+            \boxed{ 0 \le \rank(AV) \le \min(\rank A, \rank V) \le \min(n,d)}
+            $$
+            For rank 0 take zero $A$, for rank $\min(n,d)$ take full-rank $V$ and full-rank $A$ (so that $AV$ is full-rank).
+            \item $V$ of rank $d$ implies $n>=d$ and thus (since $D>d$):
+            $$
+            \boxed{ 0 \le \rank(AV) \le \min(\rank A, \rank V) \le d}
+            $$
+            \end{itemize}
+        
+            \noindent\rule{\textwidth}{1pt}
+    \end{enumerate}
+
+
+\end{document}

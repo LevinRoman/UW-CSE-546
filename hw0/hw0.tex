@@ -12,7 +12,7 @@
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{fancyhdr}
 \usepackage{multirow}
-
+\usepackage{pythonhighlight}
 \usepackage{pgfplots}
 
 % Some additional tweaking for this package can be made in the preamble. To change the size of each plot and also guarantee backwards compatibility (recommended) add the next line:
@@ -71,7 +71,7 @@
 \normalsize{\bf 1721898} \\
 }
 \maketitle
-
+Collaborators: compared answers with Tyler Chen, Diya Sashidhar, Katherine Owens
 \section*{Problems A}
 \subsection*{Probability and Statistics}
 A.1 \points{2} (Bayes Rule, from Murphy exercise 2.4.) After your yearly checkup, the doctor has bad news and good news. The bad news is that you tested positive for a serious disease, and that the test is 99\% accurate (i.e., the probability of testing positive given that you have the disease is 0.99, as is the probability of testing negative given that you dont have the disease). The good news is that this is a rare disease, striking only one in 10,000 people. What are the chances that you actually have the disease? (Show your calculations as well as giving the final result.)\\
@@ -208,8 +208,8 @@ If we define $\widehat{\mu}_n = \frac{1}{n} \sum_{i=1}^n X_i$, what is the mean 
     \begin{itemize}
     \item $\E[\sum_{i=1}^n X_i] = \sum_{i=1}^n \mu = \mu n$ and $\V[\sum_{i=1}^n X_i] = \sum_{i=1}^n \sigma^2 = \sigma^2 n$ since $X_i$ are iid.
     
-    \item So $\E[\widehat{\mu}_n] = \mu$ and $\V[\widehat{\mu}_n] = \sigma^2/n$ (by the same argument with A.5).
-    \item Then, again by the same argument with A.5: $$\boxed{\E(\sqrt{n}(\widehat{\mu}_n - \mu)) = 0, \V(\sqrt{n}(\widehat{\mu}_n - \mu)) = (\sqrt{n})^2\sigma^2/n = \sigma^2}$$
+    \item So $\E[\widehat{\mu}_n] = \mu$ and $\V[\widehat{\mu}_n] = \sigma^2/n$ (by the same argument with A.4).
+    \item Then, again by the same argument with A.4: $$\boxed{\E(\sqrt{n}(\widehat{\mu}_n - \mu)) = 0, \V(\sqrt{n}(\widehat{\mu}_n - \mu)) = (\sqrt{n})^2\sigma^2/n = \sigma^2}$$
     \end{itemize}
     \noindent\rule{\textwidth}{1pt}
 A.6 If $f(x)$ is a PDF, the cumulative distribution function (CDF)
@@ -456,31 +456,120 @@ A.10 For possibly non-symmetric $\mat{A}, \mat{B} \in \R^{n \times n}$ and $c \i
 \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
-
+     $$
+     \boxed{f(x,y) = \sum_{i=1}^n \sum_{j=1}^n A_{ij}x_i x_j + \sum_{i=1}^n \sum_{j=1}^n y_i B_{ij} x_j + c  }
+     $$
+     
+     
     \noindent\rule{\textwidth}{1pt}
 	\item \points{2} What is $\nabla_x f(x,y)$ in terms of the summations over indices \emph{and} vector notation?\\
 \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
-
+    $$
+    \boxed{ (\nabla_x f(x,y))_k =  \frac{\partial f(x,y)}{\partial x_k} = \sum_{\substack{j=1\\  j\not=k}}^n A_{kj}x_j + \sum_{\substack{i=1\\  i\not=k}}^n A_{ik}x_i + 2A_{kk}x_k + \sum_{i=1}^n y_iB_{ik} = \sum_{\substack{j=1}}^n A_{kj}x_j + \sum_{\substack{i=1}}^n A_{ik}x_i + \sum_{i=1}^n y_iB_{ik}}
+    $$
+    Expressing the above in the vector form:
+    $$
+    \boxed{\nabla_x f(x,y) = (A + A^T)x + B^Ty}
+    $$
     \noindent\rule{\textwidth}{1pt}
 	\item \points{2} What is $\nabla_y f(x,y)$ in terms of the summations over indices \emph{and} vector notation?
 	\\
 \\
     \noindent\rule{\textwidth}{1pt}
     {\bf Solution:}\\
-
+    $$
+    \boxed{ (\nabla_y f(x,y))_k =  \frac{\partial f(x,y)}{\partial y_k} = \sum_{j=1}^n B_{kj}x_j}
+    $$
+    Epressing the above in the vector form:
+    $$
+    \boxed{ \nabla_y f(x,y) =  Bx}
+    $$
     \noindent\rule{\textwidth}{1pt}
 \end{enumerate}
 
-B.2 \points{1} The \textit{trace} of a matrix is the sum of the diagonal entries; $Tr(A) = \sum_i A_{ii}$. If $A\in\mathbb{R}^{n\times m}$ and $B\in\mathbb{R}^{m\times n}$, show that $Tr(AB) = Tr(BA)$.\\
+B.2 \points{1} The \textit{trace} of a matrix is the sum of the diagonal entries; $Tr(A) = \sum_i A_{ii}$. If $A\in\mathbb{R}^{n\times m}$ and $B\in\mathbb{R}^{m\times n}$, show that $Tr(AB) = Tr(BA)$.	\\
+\\
+    \noindent\rule{\textwidth}{1pt}
+    {\bf Solution:}\\
+    \begin{itemize}
+        \item Note that $(AB)_{ii} = \sum_{j=1}^m A_{ij}B_{ji}, \quad (BA)_{jj} = \sum_{i=1}^n B_{ji}A_{ij}$
+        \item Then: 
+        $$
+        Tr(AB) = \sum_{i=1}^n(AB)_{ii} = \sum_{i=1}^n\sum_{j=1}^m A_{ij}B_{ji} =
+        \sum_{j=1}^m\sum_{i=1}^n B_{ji}A_{ij} = \sum_{j=1}^m(BA)_{jj} = Tr(BA) \qquad \Box
+        $$
+    \end{itemize}        
+
+
+    \noindent\rule{\textwidth}{1pt}
 
 B.3 \points{1} Let $v_1,\dots,v_n$ be a set of non-zero vectors in $\mathbb{R}^d$. Let $V = [v_1,\dots,v_n]$ be the vectors concatenated. 
     \begin{enumerate}
         \item What is the minimum and maximum rank of $\sum_{i=1}^n v_i v_i^T$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Note that $\sum_{i=1}^n v_i v_i^T = VV^T$. Since the $v_i$ are nonzero, the minimum rank cannot be zero (since only zero matrix is of zero rank), so we have:
+            $$
+            \boxed{ 1 \le \rank VV^T \le \rank V \le \min(n,d)}
+            $$
+            An example of the minimum rank 1 would be to take $V$ with all the columns equal to the same vector, then both $V$ and $VV^T$ would be rank 1.
+            An example of the maximum rank would be
+            \begin{itemize}
+                \item For $n >= d$: let $V$ be a matrix with $n$ orthonormal columns, then $VV^T$ and $V$ would be full rank.
+                \item For $d >= n$: let $V$ be a matrix with $d$ orthonormal rows, then $VV^T$ and $V$ would be full rank.
+            \end{itemize}
+            (In fact, it can be shown that $\rank VV^T = \rank V$ by taking the reduced SVD of V and obtaining the SVD of $VV^T$ with the same number of nonzero singular values which is equal to rank.
+            $$
+            V = \hat U \hat \Sigma \hat V^T \Rightarrow VV^T = \hat U \hat \Sigma \hat V^T \hat V \hat \Sigma \hat U^T = \hat U \hat \Sigma^2 \hat U^T
+            $$
+            Now, $\hat \Sigma$ and $\hat \Sigma^2$ have the same number of nonzero elements, so $\rank VV^T = \rank V \qquad \Box$)
+            
+            \noindent\rule{\textwidth}{1pt}
         \item What is the minimum and maximum rank of $V$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Again, since $v_i$ are nonzero, we cannot have zero rank. The full rank would be $\min(d,n)$ (by definition). Examples are given in a.
+            $$ 
+            \boxed{1 \le \rank V \le \min(d,n)}
+            $$
+        
+            \noindent\rule{\textwidth}{1pt}
         \item Let $A \in \mathbb{R}^{D \times d}$ for $D > d$. What is the minimum and maximum rank of $\sum_{i=1}^n (A v_i) (A v_i)^T$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            Note that $\sum_{i=1}^n (A v_i) (A v_i)^T = (AV)(AV)^T$. Then, since $D>d$:
+            $$
+            \boxed{ 0 \le \rank(AV)(AV)^T \le \rank(AV) \le \min(\rank A, \rank V) \le \min(n,d)}
+            $$
+            For rank 0 take zero $A$, for rank $\min(n,d)$ take full-rank $V$ and full-rank $A$ (because in the latter case $AV$ is full rank and so is $(AV)(AV)^T$ by a.).
+        
+            \noindent\rule{\textwidth}{1pt}
         \item What is the minimum and maximum rank of $AV$? What if $V$ is rank $d$?
+        \\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\
+            \begin{itemize}
+            \item
+            $$
+            \boxed{ 0 \le \rank(AV) \le \min(\rank A, \rank V) \le \min(n,d)}
+            $$
+            For rank 0 take zero $A$, for rank $\min(n,d)$ take full-rank $V$ and full-rank $A$ (so that $AV$ is full-rank).
+            \item $V$ of rank $d$ implies $n>=d$ and thus (since $D>d$):
+            $$
+            \boxed{ 0 \le \rank(AV) \le \min(\rank A, \rank V) \le d}
+            $$
+            \end{itemize}
+        
+            \noindent\rule{\textwidth}{1pt}
     \end{enumerate}
 
 \subsection*{Programming}
@@ -490,9 +579,31 @@ A.11 For the $A, b, c$ as defined in Problem 8, use
   \begin{enumerate}
   \item \points{2} What is $A^{-1}$?
   \item \points{1} What is $A^{-1}b$? What is $Ac$?
-  \end{enumerate}  
-
-
+  \end{enumerate}\\
+        \\
+            \noindent\rule{\textwidth}{1pt}
+            {\bf Solution:}\\  
+            See Figure 1.
+            \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.33\textwidth]{A11.png}
+            \caption{Screenshot of the solution for A11}
+            \end{figure}
+\begin{python}
+#Code for A11
+import numpy as np
+A = np.array([[0,2,4], [2,4,2], [3,3,1]])
+b = np.array([-2,-2,-4])
+c = np.array([1,1,1])
+A_inv = np.linalg.inv(A)
+print("Inverse of A is ")
+print(A_inv)
+print("A^(-1)b is ")
+print(A_inv@b)
+print('Ac is ')
+print(A@c)
+\end{python}
+\noindent\rule{\textwidth}{1pt}
 A.12 \points{4} Two random variables $X$ and $Y$ have equal
   distributions if their CDFs, $F_X$ and $F_Y$, respectively, are
   equal, i.e. for all $x$, $ |F_X(x) - F_Y(x)| = 0$. 
@@ -527,7 +638,64 @@ Your plot should look something like the following (Tip: checkout \texttt{seabor
 \includegraphics[width=4in]{full.png}
 \end{center} 
 
+\\
+        \\
+\noindent\rule{\textwidth}{1pt}
+{\bf Solution:}\\
+a. See Figure 2 for the plot of empirical CDF of the standard normal.
+Using the $\frac{1}{4n}$ bound in A.6, we find that $n = 40000$ is sufficient to guarantee the required error from the true CDF.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.6\textwidth]{A12a_CDF.pdf}
+\caption{Empirical CDF for A12a}
+\end{figure}
+
+
+\begin{python}
+#Code for A12.a
+import numpy as np
+import matplotlib.pyplot as plt
+n = 40000
+Z = np.random.randn(n)
+ax = plt.gca()
+plt.step(sorted(Z), np.arange(1,n+1)/float(n))
+plt.title("Empirical CDF of mean of n = 40000 i.i.d N(0,1) variables")
+ax.set_xlim((-3,3))
+plt.xlabel('Observations')
+plt.ylabel('Probability')
+plt.savefig('A12a_CDF.pdf')
+\end{python}
+
+\\
+b. See Figure 3.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.6\textwidth]{A12b.pdf}
+\caption{A12b}
+\end{figure}
+\newpage
+\begin{python}
+#Code for A12.b
+import numpy as np
+import matplotlib.pyplot as plt
+n = 40000
+Z = np.random.randn(n)
+ax = plt.gca()
+plt.step(sorted(Z), np.arange(1,n+1)/float(n), label = 'Gaussian')
+
+for k in [1,8,64,512]:
+    Z_k = np.sum(np.sign(np.random.randn(n, k))*np.sqrt(1./k), axis=1) 
+    plt.step(sorted(Z_k), np.arange(1,n+1)/float(n), label='%s' % k)
+
+ax.set_xlim((-3,3))
+plt.legend()
+plt.xlabel('Observations')
+plt.ylabel('Probability')
+plt.savefig('A12b.pdf')
+\end{python}
+\noindent\rule{\textwidth}{1pt}
+            
 
 
 \end{document}
