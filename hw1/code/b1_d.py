@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	plt.title('Problem B1.d')
 	plt.xlabel('m')
 	plt.ylabel('value')
-	plt.legend()
+	plt.legend(prop={'size': 24})
 	plt.savefig('b1_d.pdf')
 	plt.show()
 
