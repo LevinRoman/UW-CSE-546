@@ -141,10 +141,11 @@ if __name__ == "__main__":
     Y_val = Y_train[VAL]
     labels_val = labels_train[VAL]
 
-    p_grid = np.arange(100, 7000, 500)
+    p_grid = np.arange(100, 5100, 500)
     val_score = []
     train_score = []
     for p in p_grid:
+        print('Current p:', p)
         #Fit the model
         transformed_X_train80, G, b = non_linear_transform(X_train80, p)
         W_hat_p = train(transformed_X_train80, Y_train80, 1e-4)
