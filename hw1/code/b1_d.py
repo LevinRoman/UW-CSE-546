@@ -1,8 +1,9 @@
-import numpy as np
-import matplotlib.pyplot as plt
 ######################
 #Problem B1.d, HW1
 ######################
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 # def indicator(x, left, right):
 # 	return (x > left) and (x<right)

@@ -1,3 +1,6 @@
+######################
+#Problem B1.d, HW1
+######################
 import numpy as np
 from mnist import MNIST
 
