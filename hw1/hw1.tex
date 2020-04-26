@@ -15,6 +15,49 @@
 \usepackage{pythonhighlight}
 \usepackage{pgfplots}
 
+\usepackage{minted}
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
 % Some additional tweaking for this package can be made in the preamble. To change the size of each plot and also guarantee backwards compatibility (recommended) add the next line:
 
 \pgfplotsset{width=10cm,compat=1.9}
@@ -241,9 +284,20 @@ B.1 {\bf Solution:}\\
                 \boxed{\frac{1}{n} \sum_{j=1}^{n/m} m \E[( c_j - \bar{f}^{(j)})^2]} = \frac{1}{n}\frac{n}{m}m\V[c_j]
                 = \boxed{\frac{\sigma^2}{m}}. \qquad \Box
             \end{align*}
-    \item \lstset{numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt}
-
-\lstinputlisting[language=Python]{HW4.py}
+    \item See Figure \ref{figure:b1.d} and code listing \ref{listing:b1.d}.
+         \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.4\textwidth]{code/b1_d.pdf}
+            \caption{Problem B1.d}
+            \label{figure:b1.d}
+         \end{figure}
+         
+         \begin{listing}[ht]
+          \inputminted{python}{code/b1_d.py}
+          \caption{Code for B1.d}
+          \label{listing:b1.d}
+         \end{listing}
+   
     \item From b., we know that the average bias-squared is
     $$
     \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2.
