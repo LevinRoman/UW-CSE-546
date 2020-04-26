@@ -141,7 +141,7 @@ if __name__ == "__main__":
     Y_val = Y_train[VAL]
     labels_val = labels_train[VAL]
 
-    p_grid = np.arange(100, 5100, 500)
+    p_grid = np.arange(100, 5600, 500)
     val_score = []
     train_score = []
     for p in p_grid:
