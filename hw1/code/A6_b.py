@@ -1,5 +1,5 @@
 ######################
-#Problem B1.d, HW1
+#Problem A6.b, HW1
 ######################
 import numpy as np
 from mnist import MNIST
