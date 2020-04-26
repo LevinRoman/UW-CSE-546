@@ -365,18 +365,16 @@ B.2 {\bf Solution:}\\
           \label{listing:b2.a}
     \item First, we compute the test error using the best $\widehat p$ (looking at the plot in a., we chose $\widehat p = 3100$), we obtain (the code is below):
     $$
-    \widehat{\epsilon}(\widehat{f}) = 0.0348.
+    \Boxed{\widehat{\epsilon}_{\text{test}}(\widehat{f}) = 0.0348.}
     $$
-    Now, $X_i$ from the Hoeffding's inequality are iid indicator variables taking values in $\{0,1\}$ corresponding to the $i$-th test example being classified correctly or not, respectively. So, to obtain the confidence interval, we plug in:$\delta = 0.05, m = 10000 \text{test set size}, a=0, b=1$. Finally, we obtain $\sqrt{\frac{(b-a)^2 \log(2/\delta)}{2m}} \approx 0.01358102$ and
+    Now, $X_i$ from the Hoeffding's inequality are iid indicator variables taking values in $\{0,1\}$ corresponding to the $i$-th test example being classified correctly or not, respectively. So, to obtain the confidence interval, we plug in: $\delta = 0.05, m = 10000 \text{ (test set size)}, a=0, b=1$. Finally, we obtain $\sqrt{\frac{(b-a)^2 \log(2/\delta)}{2m}} \approx 0.01358102$ and
     $$
-    \P \left( \left|\widehat{\epsilon}(\widehat{f})  - \epsilon(\widehat{f}) \right| \geq 0.01358102 \right)
+    \P \left( \left|\widehat{\epsilon}_{\text{test}}(\widehat{f})  - \epsilon(\widehat{f}) \right| \geq 0.01358102 \right)
                 \leq 0.05,
     $$
     so the $95\%$ CI for $\epsilon(\widehat{f})$ is  $\boxed{0.0348 \pm 0.01358102}$ $\Box$.
     This question uses the same functions defined in the code for part a. and computes the test error as follows:
-    \begin{minted}{python}
-    
-    \end{minted}
+    \inputminted{python}{code/B2_b.py}
     
 \end{enumerate}
 \noindent\rule{\textwidth}{1pt}
