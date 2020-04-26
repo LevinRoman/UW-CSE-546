@@ -56,8 +56,8 @@ if __name__ == "__main__":
 	plt.xlabel('m')
 	plt.ylabel('value')
 	plt.legend()
-	plt.show()
 	plt.savefig('b1_d.pdf')
+	plt.show()
 
 
 
