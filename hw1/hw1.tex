@@ -332,7 +332,8 @@ B.1 {\bf Solution:}\\
 \noindent\rule{\textwidth}{1pt}
 A.4 {\bf Solution:}\\
 \noindent\rule{\textwidth}{1pt}
-    
+    \inputminted{python}{code/A6_b.py}
+          \caption{Code for A6.b}
 \noindent\rule{\textwidth}{1pt}
 A.5 {\bf Solution:}\\
 
@@ -342,7 +343,24 @@ A.5 {\bf Solution:}\\
 \noindent\rule{\textwidth}{1pt}
 A.6 {\bf Solution:}\\
 \begin{enumerate}
-    \item 
+    \item As per the hint: \begin{align*}
+                \sum_{i=1}^{n} \| W^T x_i - y_i \|_2^2 + \lambda \| W \|_F^2
+                &= \sum_{j=0}^{k} \left[ \sum_{i=1}^{n} (e_j^TW^Tx_i - e_j^Ty_i)^2 + \lambda \|We_j\|_F^2 \right]
+                \\&= \sum_{j=0}^{k} \left[ \sum_{i=1}^{n} (w_j^Tx_i - e_j^Ty_i)^2 + \lambda \|w_j\|^2 \right]
+                \\&= \sum_{j=0}^{k} \left[ \| Xw_j - Ye_j \|^2 + \lambda \|w_j\|^2 \right]
+            \end{align*}
+          To minimize this quantity w.r.t. $W$ we take the derivative and set it to zero:
+          \begin{align*}
+          &\frac{\partial}{\partial w_j} \sum_{j=0}^{k} \left[ \| Xw_j - Ye_j \|^2 + \lambda \|w_j\|^2\right] = 
+          \frac{\partial}{\partial w_j} \left[ \| Xw_j - Y_{:,j} \|^2 + \lambda \|w_j\|^2\right] = \\
+          &= X^T(Xw_j - Y_{:,j}) + \lambda w_j = 0 \Leftrightarrow \widehat{w}_j = (X^TX + \lambda I)^{-1}Y_{:,j}
+          \end{align*}
+          where $Y_{:,j}$ stands for $j$-th column of $Y$ (in python-like notation since $y_i$ are reserved for the ows of $Y$).
+          That is,
+          $$
+          \boxed{\widehat{W} = (X^TX + \lambda I)^{-1} X^TY }
+          $$
+          The ridge regression problem is evidently convex in $\widehat{W}$ (since the Hessian is $X^TX + \lambda I \succ 0$ for $\lambda >0$) and thus we indeed have the global minimum. $\Box$
     \item {\bf Train error: 0.14805000000000001, Test error: 0.14659999999999995}. See the code below. 
           \inputminted{python}{code/A6_b.py}
           \caption{Code for A6.b}
@@ -365,7 +383,7 @@ B.2 {\bf Solution:}\\
           \label{listing:b2.a}
     \item First, we compute the test error using the best $\widehat p$ (looking at the plot in a., we chose $\widehat p = 3100$), we obtain (the code is below):
     $$
-    \Boxed{\widehat{\epsilon}_{\text{test}}(\widehat{f}) = 0.0348.}
+     \boxed{\widehat{\epsilon}_{\text{test}}(\widehat{f}) = 0.0348.}
     $$
     Now, $X_i$ from the Hoeffding's inequality are iid indicator variables taking values in $\{0,1\}$ corresponding to the $i$-th test example being classified correctly or not, respectively. So, to obtain the confidence interval, we plug in: $\delta = 0.05, m = 10000 \text{ (test set size)}, a=0, b=1$. Finally, we obtain $\sqrt{\frac{(b-a)^2 \log(2/\delta)}{2m}} \approx 0.01358102$ and
     $$
