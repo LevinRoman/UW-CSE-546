@@ -1,6 +1,10 @@
+##########################
+#Problems A4 and A5, HW1
+##########################
+
 '''
-    Template for polynomial regression
-    AUTHOR Eric Eaton, Xiaoxiang Hu
+    Using template for polynomial regression
+    by Eric Eaton, Xiaoxiang Hu
 '''
 
 import numpy as np
@@ -35,7 +39,7 @@ class PolynomialRegression:
         """
         X_ = X
         for d in range(1, self.degree):
-        	X_ = np.c_[X_, X**d]
+            X_ = np.c_[X_, X**d]
 
         return X_
 
@@ -57,11 +61,11 @@ class PolynomialRegression:
         X_ = self.polyfeatures(X, self.degree)
         # normalization (no normalization if n = 1)
         if n!=1:
-        	self.mean = X_.mean(axis = 0)
-        	self.std = X_.std(axis = 0)
+            self.mean = X_.mean(axis = 0)
+            self.std = X_.std(axis = 0)
         else:
-        	self.mean = 0
-        	self.std = 1
+            self.mean = 0
+            self.std = 1
 
         X_ = (X_ - self.mean)/self.std
         # adding ones
@@ -73,7 +77,7 @@ class PolynomialRegression:
         reg_matrix = self.regLambda * np.eye(d)
         reg_matrix[0, 0] = 0
 
-	# analytical solution (X'X + regMatrix)^-1 X' y
+    # analytical solution (X'X + regMatrix)^-1 X' y
         self.theta = np.linalg.pinv(X_.T.dot(X_) + reg_matrix).dot(X_.T).dot(y)
 
 
@@ -133,21 +137,21 @@ def learningCurve(Xtrain, Ytrain, Xtest, Ytest, reg_lambda, degree):
     # the performance of the model trained with only 1 data point. 
 
     for i in range(1,n):
-    	Xtrain_i = Xtrain[0:i+1]
-    	Ytrain_i = Ytrain[0:i+1]
-    	Ytrain_i = Ytrain[0:i+1]
+        Xtrain_i = Xtrain[0:i+1]
+        Ytrain_i = Ytrain[0:i+1]
 
-    	# training the model 
-    	model = PolynomialRegression(degree=degree, reg_lambda=reg_lambda)
-    	model.fit(Xtrain_i, Ytrain_i)
+        # training the model 
+        model = PolynomialRegression(degree=degree, reg_lambda=reg_lambda)
+        model.fit(Xtrain_i, Ytrain_i)
 
-    	# make predictions
-    	predictions_train_i = model.predict(Xtrain_i)
-    	predictions_test_i = model.predict(Xtest)
-    	# compute errors
-    	error_train_i = ((predictions_train_i -Ytrain_i)**2).mean()
-    	error_test_i = ((predictions_test_i -Ytest)**2).mean()
-    	errorTrain[i] = error_train_i
-    	errorTest[i] = error_test_i
+        # make predictions
+        predictions_train_i = model.predict(Xtrain_i)
+        predictions_test_i = model.predict(Xtest)
 
+        # compute errors
+        error_train_i = np.mean((predictions_train_i -Ytrain_i)**2)
+        error_test_i = np.mean((predictions_test_i -Ytest)**2)
+        errorTrain[i] = error_train_i
+        errorTest[i] = error_test_i
+    
     return errorTrain, errorTest
