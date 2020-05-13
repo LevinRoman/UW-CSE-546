@@ -132,7 +132,7 @@ if __name__ == "__main__":
 	w_init = None
 	for reg_lambda in lambdas:
 		model = Lasso(reg_lambda = reg_lambda)
-		model.fit(X,y, w_init, delta = 1e-4)
+		model.fit(X,y, w_init, delta = 1e-3)
 		w_init = np.copy(model.w)
 		total_num_of_nonzeros = np.sum(abs(model.w) > 1e-14)
 		number_of_incorrect_nonzeros = np.sum(model.w[abs(w_true) <= 1e-14] > 1e-14)
