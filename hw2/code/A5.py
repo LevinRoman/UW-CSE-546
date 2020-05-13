@@ -1,3 +1,7 @@
+######################
+#Problem A5, HW2
+######################
+
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt
@@ -29,7 +33,8 @@ class Lasso:
 		float
 			Objective value for current w, b and given reg_lambda
 		"""
-		return (np.linalg.norm(X.dot(self.w) + self.b - y))**2 + self.reg_lambda*np.linalg.norm(self.w, ord = 1)
+		return (np.linalg.norm(X.dot(self.w) + self.b 
+			- y))**2 + self.reg_lambda*np.linalg.norm(self.w, ord = 1)
 
 	def fit(self, X, y, w_init = None, delta = 1e-4):
 		"""
@@ -66,8 +71,11 @@ class Lasso:
 			for k in range(d):
 				not_k_cols = np.arange(d) != k
 				a_k = a[k]
-				c_k = 2*np.sum(X[:,k]*(y - (self.b + X[:, not_k_cols].dot(self.w[not_k_cols]))), axis = 0)
-				self.w[k] = np.float(np.piecewise(c_k, [c_k < -self.reg_lambda, c_k > self.reg_lambda, ], [(c_k+self.reg_lambda)/a_k, (c_k-self.reg_lambda)/a_k, 0]))
+				c_k = 2*np.sum(X[:,k]*(y - (self.b +
+					X[:, not_k_cols].dot(self.w[not_k_cols]))), axis = 0)
+				self.w[k] = np.float(np.piecewise(c_k,
+					[c_k < -self.reg_lambda, c_k > self.reg_lambda, ],
+					[(c_k+self.reg_lambda)/a_k, (c_k-self.reg_lambda)/a_k, 0]))
 			if iter_count % 1 == 0:
 				print('Iter ', iter_count, ' Loss:', self.objective(X,y))
 			convergence_history.append(self.objective(X,y))
@@ -102,7 +110,8 @@ if __name__ == "__main__":
 	w_regularization_path = []
 	train_mse = []
 	test_mse = []
-	lambda_max = np.max(np.sum(2*X_train.values*(y_train.values - np.mean(y_train.values))[:, None], axis = 0))
+	lambda_max = np.max(np.sum(2*X_train.values*(y_train.values - 
+		np.mean(y_train.values))[:, None], axis = 0))
 	lambdas = [lambda_max/(2**i) for i in range(17)]
 
 	w_init = None
