@@ -125,7 +125,7 @@ A.0 {\bf Solution:}\\
     \\
     {\bf Variance} -- how much on average our model changes (how much the predictions vary) around our expected model over iid resampling of the data from the underlying generating distribution. (That is, every time we draw a new dataset from the underlying distribution and refit the model.) \\
     \\
-    {\bf Bias-Variance Tradeoff} -- The true total expected error of our model decomposes into irreducible error and learning error. The learning error decomposes into the bias squared and variance squared. So, we could reduce the learning error by reducing the bias and/or the variance of our model. However, usually models with lower bias have higher variance and vice versa, so there is a tradeoff between bias and variance. We would like to find the sweet spot, that is, we want to balance bias and variance to get smaller learning error.
+    {\bf Bias-Variance Tradeoff} -- The true total expected error of a model decomposes into irreducible error and learning error. The learning error decomposes into the bias squared and variance squared. So, we could reduce the learning error by reducing the bias and/or the variance of our model. However, usually models with lower bias have higher variance and vice versa, so there is a tradeoff between bias and variance. We would like to find the sweet spot, that is, we want to balance bias and variance to get smaller learning error.
     \item As the model {\bf complexity increases, bias decreases and variance increases}. As the model {\bf complexity decreases, bias increases and variance decreases}.
     \item {\bf False}
     \item {\bf True} (Or True-ish. Usually, using more data has a regularizing effect, so more data reduces variance, especially if the model is expressive enough to capture the "truth". However, we could also think of artificial counter-examples like a model which has no trainable parameters and just outputs 42 for any input. For this model, the variance will be always zero, but we would probably prefer models with trainable parameters.)
@@ -258,7 +258,7 @@ A.3 {\bf Solution:}\\
                 \\ &\Box
             \end{align*}
 \end{enumerate}   
-
+\subsection*{Bias-Variance Tradeoff}
 \noindent\rule{\textwidth}{1pt}
 B.1 {\bf Solution:}\\
 \begin{enumerate}
@@ -331,7 +331,6 @@ B.1 {\bf Solution:}\\
 
 \noindent\rule{\textwidth}{1pt}
 A.4 {\bf Solution:}\\
-\noindent\rule{\textwidth}{1pt}
 Bigger $\lambda$ results in more regularization, as we can see from the plots in Figure \ref{figure:a4}. See the code for both A.4 in A.5 after Figure \ref{figure:a5}
     \begin{figure}[h!]
             \centering
@@ -344,7 +343,9 @@ Bigger $\lambda$ results in more regularization, as we can see from the plots in
     \end{figure}
 
 \noindent\rule{\textwidth}{1pt}
+\noindent\rule{\textwidth}{1pt}
 A.5 {\bf Solution:}\\
+    See the function learningCurve in the following script:
     \begin{figure}[h!]
             \centering
             \includegraphics[width=0.9\textwidth]{hw1/code/Polynomial_Regression/figures/A5.pdf}
