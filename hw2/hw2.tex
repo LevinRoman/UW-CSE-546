@@ -14,7 +14,8 @@
 \usepackage{multirow}
 \usepackage{pythonhighlight}
 \usepackage{pgfplots}
-
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.11}
 \usepackage{minted}
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
@@ -108,229 +109,142 @@ showstringspaces=false            %
 \setlength\parindent{0px}
 
 \begin{document}
-\title{Homework \#1}
+\title{Homework \#2}
 \author{\normalsize{Spring 2020, CSE 546: Machine Learning}\\
 \normalsize{\bf Roman Levin} \\
 \normalsize{\bf 1721898} \\
 }
 \maketitle
 Collaborators: compared answers with Tyler Chen, Diya Sashidhar, Katherine Owens
-\section*{Problems A}
+
 \subsection*{Conceptual Questions}
 \noindent\rule{\textwidth}{1pt}
 
 A.0 {\bf Solution:}\\
-\begin{itemize}
-    \item {\bf Bias} -- how far our expected model is from the best possible estimator. Or, in expectation (over all possible data), how well our model fits the best possible estimator.\\
-    \\
-    {\bf Variance} -- how much on average our model changes (how much the predictions vary) around our expected model over iid resampling of the data from the underlying generating distribution. (That is, every time we draw a new dataset from the underlying distribution and refit the model.) \\
-    \\
-    {\bf Bias-Variance Tradeoff} -- The true total expected error of our model decomposes into irreducible error and learning error. The learning error decomposes into the bias squared and variance squared. So, we could reduce the learning error by reducing the bias and/or the variance of our model. However, usually models with lower bias have higher variance and vice versa, so there is a tradeoff between bias and variance. We would like to find the sweet spot, that is, we want to balance bias and variance to get smaller learning error.
-    \item As the model {\bf complexity increases, bias decreases and variance increases}. As the model {\bf complexity decreases, bias increases and variance decreases}.
-    \item {\bf False}
-    \item {\bf True} (Or True-ish. Usually, using more data has a regularizing effect, so more data reduces variance, especially if the model is expressive enough to capture the "truth". However, we could also think of artificial counter-examples like a model which has no trainable parameters and just outputs 42 for any input. For this model, the variance will be always zero, but we would probably prefer models with trainable parameters.)
-    \item {\bf False} (e.g. using zero features does not result in better models)
-    \item {\bf Train set} (we should NEVER use the test set for tuning the model)
-    \item {\bf False}
-\end{itemize}
+\begin{enumerate}
+    \item {\bf No,} because there could be several perfectly correlated features, each with large positive weight (e.g. 'number of bathrooms' and 'number of showers'). If they are perfectly correlated, then either one could be removed without compromising the quality of the predictions.
+    \item Because of {\bf the shape of L1 and L2 norm balls (level sets)}. The L1 ball is more "spiky" (with sparse vertices) and therefore level sets of the original objective are more likely to intersect it at its sparse vertices (unlike in the case of L2) resulting in a sparse solution to the regularized problem. Also, L0 penalty explicitly penalizes the number of non-zero elements and, between $p = 2$ and $p = 1$, the latter is closer to $p = 0$, and thus L1 norm is a better proxy for L0 than L2 is.
+    \item Upside: promotes {\bf sparsity} even better than L1. Downside: {\bf non-convex}.
+    \item {\bf True}
+    \item Because {\bf in expectation it goes in the right direction.}
+    \item Advantage: one iteration of SGD {\bf is much less expensive computationally} compared to GD. Disadvantage: SGD requires {\bf more iterations} to reach the same error.
+\end{enumerate}
 
 \noindent\rule{\textwidth}{1pt}
-\subsection*{MLE}
+\subsection*{Convexity and Norms}
 \noindent\rule{\textwidth}{1pt}
 A.1 {\bf Solution:}\\
 \begin{enumerate}
-    \item Let's find the ML estimator for an arbitrary n: $\lambda_{MLE} = \arg\min_\lambda L(\lambda)$.
+    \item First, let's prove the following (obvious) fact: $\forall a,b \in \R: |a + b| \le |a| + |b|$:
+    $$|a + b|^2 = a^2 + b^2 + 2ab \le a^2 + b^2 + 2|a||b| = (|a| + |b|)^2 \Rightarrow |a + b| \le |a| + |b| \text{  since  } |a + b|\ge 0, |a| + |b|\ge 0. \Box$$
+    Now, let's check the definition of the norm for L1 norm $f(x) = \sum_{i=1}^n |x_i|$:
     \begin{itemize}
-        \item $L(\lambda) = -\log \prod_{i=1}^n \mathrm{Poi}(x_i|\lambda) =  -\sum_{i=1}^n (-\lambda +  x_i\log \lambda - \log x_i!)$
-        \item $L'(\lambda) = n - \sum_i x_i/\lambda = 0 \Leftrightarrow \boxed{\lambda_{MLE} = \frac{\sum_{i=1}^n x_i}{n}}$
-        \item (Check $L''(\lambda) = \sum_i x_i/\lambda^2 \ge 0$ since $x_i \ge 0$. But if at least one of $x_i > 0$, then $L''(\lambda) > 0$, so we indeed found the minimum. If $\forall x_i = 0$, then $\lambda_{MLE} = 0$ which is also consistent with the formula above. $\Box$
-        \\
-        The answer for part a. is then: $$\boxed{\lambda_{MLE} = \frac{\sum_{i=1}^5 x_i}{5} = 6/5}$$
+        \item (Non-negativity): $f(x) \ge 0$ since $\forall i: |x_i| \ge 0$. Now, $|x_i| = 0$ iff $x_i = 0$, so $f(x) = 0$ iff $x = 0$. $\Box$
+        \item (Absolute scalability): $\forall a\in \R, x\in \R^n: f(ax) = \sum_{i=1}^n |ax_i| = \sum_{i=1}^n |a||x_i| = |a|f(x). \Box$
+        \item (Triangle inequality): $\forall x,y \in \R^n: f(x) + f(y) = \sum_{i=1}^n |x_i| + \sum_{i=1}^n |y_i| = \sum_{i=1}^n |x_i| + |y_i| \ge \sum_{i=1}^n |x_i + y_i| = f(x+y)$, where the second to last inequality follows from the triangle inequality for absolute values on $\R$ above. $\Box$
     \end{itemize}
-    \item $$\boxed{\lambda_{MLE} = \frac{\sum_{i=1}^6 x_i}{6} = 10/6 = 5/3}$$
-    \item $$\boxed{\lambda_{MLE, 5} = 6/5, \; \; \lambda_{MLE, 6} = 5/3}$$
+    \item Consider $x = [0, 1]^T, y = [1, 0]^T$. Then $g(x) + g(y) = 1^2 + 1^2 = 2, g(x+y) = (1 + 1)^2 = 4$, so for these $x,y$: $g(x+y) > g(x) + g(y)$ and the triangle inequality does not hold which means $g$ is not a norm. $\Box$
     
 \end{enumerate}
 
 \noindent\rule{\textwidth}{1pt}
 
-\noindent\rule{\textwidth}{1pt}
-A.2 {\bf Solution:}\\
-Notation: $\I{\{\cdot\}}$ stands for an indicator function.\\
-\begin{itemize}
-    \item The likelihood: $L(\theta) = \prod_{i=1}^n \frac{1}{\theta}\I{\{ x_i \in [0,\theta]\}}$. We want to find $\theta_{MLE}$ which maximizes $L(\theta).$
-    \item Note that $\exists x_i \not \in [0,\theta] \Rightarrow L(\theta)$, otherwise $L(\theta) = \frac{1}{\theta^n} > 0$ since $\theta \ge 0$. Note also that decreasing $\theta$ increases $\frac{1}{\theta^n}$. So we need to choose the smallest possible $\theta$, s.t. $\forall i: x_i \in [0,\theta]$.
-    \item The smallest possible $\theta$, s.t. $\forall i: x_i \in [0,\theta]$ is $$
-    \boxed{ \theta_{MLE} = \max_i x_i }$$
-\end{itemize}
-\noindent\rule{\textwidth}{1pt}
-\subsection*{Overfitting}
-\noindent\rule{\textwidth}{1pt}
-\\
-% Suppose we have \( N \) labeled samples \( S = \{ (x_i,y_i) \}_{i=1}^{n} \) drawn i.i.d. from an underlying distribution \( \mathcal{D} \).
-%     Suppose we decide to break this sent into a set \( S_{\text{train}} \) of size \( N_{\text{train}} \) and a set \( S_{\text{test}} \) of size \( N_{\text{test}} \) samples for our training and test set, so \( N = N_{\text{train}} + N_{\text{test}} \), and \( S = S_{\text{train}} \cup S_{\text{test}} \).
-%     Recall the definition of the true least squares error of \( f \):
-%     \begin{align*}
-%         \epsilon(f) = \EE_{(x,y)\sim\mathcal{D}}[ (f(x) - y)^2 ],
-%     \end{align*}
-%     where the subscript \( (x,y) \sim \mathcal{D} \) makes clear that our input-output pairs are sampled according to \( \mathcal{D} \).
-%     Our training and test losses are defined as:
-%     \begin{align*}
-%         \widehat\epsilon_{\text{train}}(f) 
-%         &= \frac{1}{N_{\text{train}}} \sum_{(x,y)\in S_{\text{train}}} (f(x)-y)^2
-%         \\
-%         \widehat\epsilon_{\text{test}}(f) 
-%         &= \frac{1}{N_{\text{test}}} \sum_{(x,y)\in S_{\text{train}}} (f(x)-y)^2
-%     \end{align*}
-%     We then train our algorithm (for example, using linear least squares regression) using the training set to obtain \( \widehat{f} \).
-%     \begin{enumerate}
-%         \item (bias: the test error) For all fixed \( f \) (before we've seen any data) show that
-%             \begin{align*}
-%                 \EE_{\text{train}}[ \widehat\epsilon_{\text{train}}(f) ] 
-%                 = \EE_{\text{test}}[ \widehat\epsilon_{\text{test}}(f)]
-%                 = \epsilon(f).
-%             \end{align*}
-%             Use a similar line of reasoning to show that the test error is an unbiased estimate of our true error for \( \widehat{f} \).
-%             Specifically, show that:
-%             \begin{align*}
-%                 \EE_{\text{test}}[ \widehat\epsilon_{\text{test}}(\widehat{f}) ]
-%                 = \epsilon(\widehat{f}).
-%             \end{align*}
-%         \item (bias: the train/dev error)
-%             Is the above equation true (in general) with regards to the training loss? 
-%             Specifically, does \( \EE_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}) ] \) equal \( \EE_{\text{train}}[\epsilon(\widehat{f})] \)? 
-%             If so, why? 
-%             If not, give a clear argument as to where your previous argument breaks down. 
-%         \item Let \( \mathcal{F} = (f_1,f_2, \ldots) \) be a collection of functions and let \( \widehat{f}_{\text{train}} \) minimize the training error such that \( \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) \leq \widehat\epsilon_{\text{train}}(f) \) for all \( f\in\mathcal{F} \).
-%             Show that,
-%             \begin{align*}
-%                 \EE_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) ] 
-%                 \leq \EE_{\text{test}}[ \widehat\epsilon_{\text{test}}(\widehat{f}_{\text{test}}) ] 
-%             \end{align*}
-%             (Hint: note that,
-%             \begin{align*}
-%                 \EE_{\text{train,train}}[ \widehat\epsilon_{\text{test}}(\widehat{f}_{\text{train}}) ] 
-%                 &= \sum_{f\in\mathcal{F}} \EE_{\text{train,test}}[ \widehat\epsilon_{\text{test}}(f) \bOne\{ \widehat{f}_{\text{train}} = f \} ]
-%                 \\&= \sum_{f\in\mathcal{F}} \EE_{\text{test}}[ \widehat\epsilon_{\text{test}}(f)] \EE_{\text{train}}[\bOne\{ \widehat{f}_{\text{train}} = f \} ]
-%                 \\&= \sum_{f\in\mathcal{F}} \EE_{\text{test}}[ \widehat\epsilon_{\text{test}}(f)] \PP_{\text{train}}[\widehat{f}_{\text{train}} = f ]
-%             \end{align*}
-%             where the second equality follows from the independence between the train and test set.)
-%     \end{enumerate}
-% \\
-A.3 {\bf Solution:}\\
-\begin{enumerate}
-    \item \begin{align*}
-                \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(f) ]
-        &= \E_{\text{train}}\left[\frac{1}{N_{\text{train}}} \sum_{(x,y)\in S_{\text{train}}} (f(x)-y)^2\right] = 
-        \frac{1}{N_{\text{train}}} \E_{\text{train}}\left[\sum_{(x,y)\in S_{\text{train}}} (f(x)-y)^2\right]  \\
-        &= \frac{1}{N_{\text{train}}} N_{\text{train}} \E_{(x,y)\sim\mathcal{D}}[ (f(x) - y)^2 ] =  \E_{(x,y)\sim\mathcal{D}}[ (f(x) - y)^2 ] = \epsilon(f) \qquad \Box
-        \end{align*}
-        Where the third equality follows from the fact that the points in $S_{\text{train}}$ are iid, and that sampling the entire $S_{\text{train}}$ iid and picking the points from it one by one is equivalent to just sampling one point from the generating distribution over and over again $N_{\text{train}}$ times (provided that $f$ is independent of $S_{\text{train}}$, because otherwise we cannot assume that $(f(x) - y)^2$ are iid in $\sum_{(x,y)\in S_{\text{train}}} (f(x)-y)^2)$. $f$ is indeed independent of the training set by the problem statement). 
-        \begin{align*}
-        \E_{\text{test}}[ \widehat\epsilon_{\text{test}}(f) ]
-        &= \E_{\text{test}}\left[\frac{1}{N_{\text{test}}} \sum_{(x,y)\in S_{\text{test}}} (f(x)-y)^2\right] = 
-        \frac{1}{N_{\text{test}}} \E_{\text{test}}\left[\sum_{(x,y)\in S_{\text{test}}} (f(x)-y)^2\right]  \\
-        &= \frac{1}{N_{\text{test}}} N_{\text{test}} \E_{(x,y)\sim\mathcal{D}}[ (f(x) - y)^2 ] =  \E_{(x,y)\sim\mathcal{D}}[ (f(x) - y)^2 ] = \epsilon(f)\qquad \Box
-        \end{align*}
-        Where the third equality follows from the fact that the points in $S_{\text{test}}$ are iid, and that sampling the entire $S_{\text{test}}$ iid and picking the points from it one by one is equivalent to just sampling one point from the generating distribution over and over again $N_{\text{test}}$ times (provided that $f$ is independent of $S_{\text{test}}$, because otherwise we cannot assume that $(f(x) - y)^2$ are iid in $\sum_{(x,y)\in S_{\text{test}}} (f(x)-y)^2)$. $f$ is indeed independent of the test set by the problem statement).
-        \begin{align*}
-        \E_{\text{test}}[ \widehat\epsilon_{\text{test}}(\widehat{f}) ]
-        &= \E_{\text{test}}\left[\frac{1}{N_{\text{test}}} \sum_{(x,y)\in S_{\text{test}}} (\widehat{f}(x)-y)^2\right] = 
-        \frac{1}{N_{\text{test}}} \E_{\text{test}}\left[\sum_{(x,y)\in S_{\text{test}}} (\widehat{f}(x)-y)^2\right]  \\
-        &= \frac{1}{N_{\text{test}}} N_{\text{test}} \E_{(x,y)\sim\mathcal{D}}[ (\widehat{f}(x) - y)^2 ] =  \E_{(x,y)\sim\mathcal{D}}[ (\widehat{f}(x) - y)^2 ] = \epsilon(\widehat{f})\qquad \Box
-        \end{align*}
-        Where the third equality follows from the fact that the points in $S_{\text{test}}$ are iid, and that sampling the entire $S_{\text{test}}$ iid and picking the points from it one by one is equivalent to just sampling one point from the generating distribution over and over again $N_{\text{test}}$ times (provided that $\widehat{f}$ is independent of the $S_{\text{test}}$, because otherwise we cannot assume that $(\widehat{f}(x) - y)^2$ are iid in $\sum_{(x,y)\in S_{\text{test}}} (\widehat{f}(x)-y)^2)$. Since $\widehat{f}$ is found using the training set only, it is indeed independent of the test set.).
-    \item {\bf No}, in general it is not true. The third equality in the above arguments would break down because $\widehat{f}$ is not independent of $S_{\text{train}}$ and thus we cannot assume that $(\widehat{f}(x) - y)^2$ are iid in $\sum_{(x,y)\in S_{\text{train}}} (\widehat{f}(x)-y)^2)$. 
-    \item First, note that: 
-    $$
-     \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) \leq \widehat\epsilon_{\text{train}}(f) \forall f\in\mathcal{F} \Rightarrow \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) ] \le \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(f) ] .
-    $$
-    Now, using the hint, part a., the fact that $\widehat{f}_\text{train}$ minimizes the training error, and that pmf sums to one over all possible outcomes, 
-            \begin{align*}
-                &\E_{\text{train,train}}[ \widehat\epsilon_{\text{test}}(\widehat{f}_{\text{train}}) ] 
-                = \sum_{f\in\mathcal{F}} \E_{\text{train,test}}[ \widehat\epsilon_{\text{test}}(f) \I\{ \widehat{f}_{\text{train}} = f \} ] 
-                = \sum_{f\in\mathcal{F}} \E_{\text{test}}[ \widehat\epsilon_{\text{test}}(f)] \E_{\text{train}}[\I\{ \widehat{f}_{\text{train}} = f \} ]
-                \\
-                &= \sum_{f\in\mathcal{F}} \E_{\text{test}}[ \widehat\epsilon_{\text{test}}(f)] \P_{\text{train}}[\widehat{f}_{\text{train}} = f ]
-                = \sum_{f\in\mathcal{F}} \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(f) ] \P_{\text{train}}[\widehat{f}_{\text{train}} = f ] \ge
-                \\
-                &\ge \sum_{f\in\mathcal{F}} \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) ] \P_{\text{train}}[\widehat{f}_{\text{train}} = f ] = \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) ] \sum_{f\in\mathcal{F}}\P_{\text{train}}[\widehat{f}_{\text{train}} = f ] = \E_{\text{train}}[ \widehat\epsilon_{\text{train}}(\widehat{f}_{\text{train}}) ]
-                \\ &\Box
-            \end{align*}
-\end{enumerate}   
 
 \noindent\rule{\textwidth}{1pt}
 B.1 {\bf Solution:}\\
-\begin{enumerate}
-    \item We could view $1/m$ as a proxy for the complexity of the model. That is, {\bf for large $m$} (i.e. $m = n$, simple model), the estimator would just predict the average of all the observations, so {\bf I would expect the model to have high bias but low variance}. On the other hand, {\bf for small $m$} (i.e. $m=1$, high complexity, the model would have only one observation per interval and would predict its value for any input within that interval), so {\bf I would expect the model to have low bias but high variance}. 
-    \item First, observe that for $x_i$ within $j$-th interval, all the indicators in the definition of $\widehat{f}_m$ are zero except for the one corresponding to the $j$-th interval, so we have: 
-    $$\E[ \widehat{f}_m(x_i) ] = \E [c_j] = \E[\frac{1}{m} \sum_{k=(j-1)m+1}^{jm} y_k] = \frac{1}{m} \sum_{k=(j-1)m+1}^{jm} \E[y_k] = \frac{1}{m} \sum_{k=(j-1)m+1}^{jm} f(x_k) = \bar{f}^{(j)}.$$
-    Now, using this and splitting the sum over all the points into double sum where the outer summation is over the intervals and the inner summation is over the points in a given interval, we obtain:
-    \begin{align*}
-                &\frac{1}{n} \sum_{i=1}^{n} ( \E[ \widehat{f}_m(x_i) ] - f(x_i) )^2 = 
-                \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm}  ( \E[ \widehat{f}_m(x_i) ] - f(x_i) )^2 =
-                \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2. \qquad \Box
-    \end{align*}
-
-    \item First, since $y_i$ are independent, observe that $$
-    \V[c_j] = \V[\frac{1}{m} \sum_{k=(j-1)m+1}^{jm} y_k] = \frac{1}{m^2} \sum_{k=(j-1)m+1}^{jm} \V[y_k] = \frac{\sigma^2}{m}.
+\begin{itemize}
+    \item Note that $\max_i (|x_i|^2) = (\max_i |x_i|)^2$ since $|x_i| \ge 0$. Now 
     $$
-    Also observe that for $x_i$ within $j$-th interval, all the indicators in the definition of $\widehat{f}_m$ are zero except for the one corresponding to the $j$-th interval, so we have: $\widehat{f}_m (x_i) = c_j$.
-    Now, similarly with the previous part, splitting the sum over all the points into double sum where the outer summation is over the intervals and the inner summation is over the points in a given interval, we obtain:
-    \begin{align*}
-                & \E\left[\frac{1}{n} \sum_{i=1}^{n} ( \widehat{f}_m (x_i) - \E[ \widehat{f}_m(x_i)])^2\right] =
-                \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} \E[( \widehat{f}_m (x_i) - \E[\widehat{f}_m(x_i)])^2] =\\
-                & = \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} \E[( c_j - \E[c_j])^2] =
-                \boxed{\frac{1}{n} \sum_{j=1}^{n/m} m \E[( c_j - \bar{f}^{(j)})^2]} = \frac{1}{n}\frac{n}{m}m\V[c_j]
-                = \boxed{\frac{\sigma^2}{m}}. \qquad \Box
-            \end{align*}
-    \item See Figure \ref{figure:b1.d}. The code is below, after the figure.
-         \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.9\textwidth]{code/b1_d.pdf}
-            \caption{Problem B1.d}
-            \label{figure:b1.d}
-         \end{figure}
-         
-         \inputminted{python}{code/b1_d.py}
-          \caption{Code for B1.d}
-          \label{listing:b1.d}
-   
-    \item From b., we know that the average bias-squared is
+    \|x\|_2^2 = \sum_i|x_i|^2 \ge \max_i (|x_i|^2) = (\max_i |x_i|)^2 = \|x\|^2_{\infty} \Leftrightarrow \|x\|_2 \ge \|x\|_{\infty} \text{  since  } \|x\|_2\ge0, \|x\|_{\infty}\ge0.
     $$
-    \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2.
-    $$
-    To obtain an upper bound on it, first note that because of the mean-value theorem and depending on $x_i$, one of the two cases is correct for every term in the sum corresponding to a given interval $\sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2 $:
-    \begin{itemize}
-        \item $(\bar{f}^{(j)} - f(x_i))^2 \le (\min_{i=(j-1)m+1, \ldots, jm} f(x_i) - f(x_i))^2 $
-        \item $(\bar{f}^{(j)} - f(x_i))^2 \le (\max_{i=(j-1)m+1, \ldots, jm} f(x_i)  - f(x_i))^2 $
-    \end{itemize}
-    Now, we can have the same bound for both cases:
-    \begin{itemize}
-        \item $(\bar{f}^{(j)} - f(x_i))^2 \le (\min_{i=(j-1)m+1, \ldots, jm} f(x_i) - f(x_i))^2 \le \frac{L^2}{n^2} (\arg\min_{i=(j-1)m+1, \ldots, jm} f(x_i) - i)^2 \le \frac{L^2}{n^2}(m-1)^2$
-        \item $(\bar{f}^{(j)} - f(x_i))^2 \le (\max_{i=(j-1)m+1, \ldots, jm} f(x_i)  - f(x_i))^2 \le \frac{L^2}{n^2} (\arg\max_{i=(j-1)m+1, \ldots, jm} f(x_i) - i)^2 \le \frac{L^2}{n^2}(m-1)^2$
-    \end{itemize}
-    So $\sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2 \le m\frac{L^2}{n^2}(m-1)^2 \sim O(\frac{L^2m^3}{n^2})$.
-    Thus 
-    $$\boxed{
-    \frac{1}{n} \sum_{j=1}^{n/m} \sum_{i=(j-1)m+1}^{jm} (\bar{f}^{(j)} - f(x_i))^2 \sim O(\frac{1}{n}\frac{n}{m}\frac{L^2m^3}{n^2}) \sim O(\frac{L^2m^2}{n^2}) \qquad \Box}
-    $$
-    So, using the expression for average variance above, we see that the total error behaves like \( O( \frac{L^2m^2}{n^2} + \frac{\sigma^2}{m} )\). Let's minimize this expression with respect to \( m \):
-    $$
-    \frac{d}{dm}( \frac{L^2m^2}{n^2} + \frac{\sigma^2}{m} ) = 2\frac{L^2m}{n^2} - \frac{\sigma^2}{m^2} = 0 \Leftrightarrow  \boxed{m = \sqrt[3]{\frac{\sigma^2n^2}{2L^2}}}
-    $$
-    Plugging this value back to the error gives that the total error $ \sim O\left(\frac{\sigma^{\frac{4}{3}}L^{\frac{2}{3}}}{n^{\frac{2}{3}}}\right)$. Both behaviours are intuitive:
-    \begin{itemize}
-        \item Increasing $n$, the amount of data, decreases the error and increases $m$ so we can use simpler models
-        \item Increasing $\sigma$, the amount of noise, increases the error and increases $m$ and it makes sense to use simpler models in the presence of high noise to avoid fitting the noise.
-        \item Decreasing $L$, making the underlying "truth" more smooth, decreases the error and increases $m$ so we can use simpler models (e.g. the smoothest possible function is a constant and it can be learned with very simple models). 
-    \end{itemize}
-\end{enumerate}
+    \item $\|x\|_1^2 = (\sum_i |x_i|)^2 = \sum_i |x_i|^2 + \underbrace{\sum_{i\not=j} |x_i||x_j|}_{\ge 0} \ge \sum_i |x_i|^2 = \|x\|_2^2 \Leftrightarrow \|x\|_1 \ge \|x\|_2$ since $\|x\|_2\ge0, \|x\|_1\ge0$
+    \item That is, $\boxed{\|x\|_1 \ge \|x\|_2 \ge \|x\|_{\infty}. \Box}$
+\end{itemize}
 \noindent\rule{\textwidth}{1pt}
-\subsection*{Polynomial Regression}
+
+\noindent\rule{\textwidth}{1pt}
+A.2 {\bf Solution:}\\
+\begin{itemize}
+    \item {\bf I is not convex}: line segment between points $b$ and $c$ is not in the set, while the points are. 
+    \item {\bf II is convex.} 
+    \item {\bf III is not convex}: line segment between points $d$ and $a$ is not in the set, while the points are.
+\end{itemize}
+\noindent\rule{\textwidth}{1pt}
+
+\noindent\rule{\textwidth}{1pt}
+\\
+A.3 {\bf Solution:}\\
+\begin{enumerate}
+    \item {\bf I is convex} on $[a,c[$.
+    \item {\bf II is not convex} on $[a,c]$: for $\lambda = 1/2$: $f(\lambda b + (1-\lambda)c) > \lambda f(b) + (1-\lambda)f(c)$. 
+    \item {\bf III is convex} on $[a,d]$: for $\lambda = 1/2$: $f(\lambda a + (1-\lambda)c) > \lambda f(a) + (1-\lambda)f(c)$
+    \item {\bf III is convex} on $[c,d]$.
+\end{enumerate}   
+\noindent\rule{\textwidth}{1pt}
+
+\noindent\rule{\textwidth}{1pt}
+\\
+B.2 {\bf Solution:}\\
+\begin{enumerate}
+    \item We will show convexity by definition. Take any $\lambda \in [0,1]$. Note that $(1-\lambda) \in [0,1]$. Then, taking any $x, y \in \R^n$, by triangle inequality and absolute scalability:
+    $$
+    \|\lambda x + (1-\lambda)y\| \le \|\lambda x\| + \|(1-\lambda)y\| \le \lambda\|x\| + (1-\lambda)\|y\| \Box.
+    $$
+    \item $B := \{x \in \R^n: \|x\| \le 1\}$. Take any $\lambda \in [0,1]$ and any $x,y \in B$. Then (using derivations in a.):
+    $$
+    \|\lambda x + (1-\lambda)y\| \le \lambda\underbrace{\|x\|}_{\le 1 \text{ for } x \in B} + (1-\lambda)\underbrace{\|y\|}_{\le 1 \text{ for } y \in B} \le \lambda + 1 - \lambda = 1 \Rightarrow \lambda x + (1-\lambda)y \in B 
+    $$
+    So $B$ is indeed a convex set. $\Box$
+    \item The plot of $L:=\{(x,y): g(x,y) \le 4\}$, where $g(x,y) = (|x|^{1/2} + |y|^{1/2})^2$ is on Figure 1. This set is not convex because for $\lambda = 0.5$ and points $x = [0,-4]^T, y =[4,0]^T, x,y \in L$:
+    $$\lambda x + (1-\lambda)y \not\in L \Box$$
+    
+   
+    \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.4\textwidth]{hw2/b2.png}
+            \caption{Plot of $\{(x,y): g(x,y) \le 4\}$, where $g(x,y) = (|x|^{1/2} + |y|^{1/2})^2$}
+            \label{figure:B2}
+    \end{figure}
+\end{enumerate}   
+\noindent\rule{\textwidth}{1pt}
+
+\noindent\rule{\textwidth}{1pt}
+\\
+B.3 {\bf Solution:}\\
+\begin{enumerate}
+    \item 
+    \begin{itemize}
+        \item  Let's first show that the sum of convex functions is convex. Let $f,g$ be convex, consider $f(x) + g(x)$. Take any $\lambda \in [0,1]$, take any $x, y$. Then, by convexity of $f$ and $g$:
+        $$
+        f(\lambda x + (1-\lambda)y) + g(\lambda x + (1-\lambda)y) \le \lambda f(x) + (1-\lambda)f(y) + \lambda g(x) + (1-\lambda)g(y) = \lambda (f(x) + g(x)) + (1-\lambda)(f(y) + g(y)). \Box
+        $$
+        That is, $f(x) + g(x)$ is convex if $f(x)$ and $g(x)$ are convex. Now, a sum $\sum_{i=1}^n f_i(x)$ of $n$ convex functions $f_i(x)$ is also convex because by the above we can first show that $f_1(x) + f_2(x)$ is convex, that implies the convexity of $f_1(x) + f_2(x) + f_3(x)$, etc. At every step $j$, we know that $\sum_{i=1}^{j}f_i(x)$ is convex and $f_{j+1}(x)$ is also convex, so $\sum_{i=1}^{j+1}f_i(x)$ is convex. That is, by induction, it follows that $\sum_{i=1}^n f_i(x)$ is convex. $\Box$
+        \item Now, multiplication by $\lambda > 0$ obviously preserves convexity and thus $\lambda\|w\|$ is convex because $\|w\|$ is convex. To see that, take any $\alpha \in [0,1]$ and any $x,y$:
+        $$
+        \lambda\|\alpha x + (1-\alpha)y\| \le \lambda(\alpha\|x\| + (1-\alpha)\|y\|) = \alpha\lambda\|x\| + (1-\alpha)\lambda\|y\|
+        $$
+        \item Finally, since $l_i(w) \text{ are convex } \Rightarrow \sum_{i=1}^n l_i(w)$ is convex. As shown above, $\lambda \|w\|$ is convex too. So 
+        $\sum_{i=1}^n l_i(w) + \lambda \|w\|$ is convex as a sum of two convex functions. $\Box$
+    \end{itemize}
+    \item Because convexity implies that every local minimum is a global minimum. $\Box$
+\end{enumerate}   
+\noindent\rule{\textwidth}{1pt}
+
+
+\subsection*{Lasso}
 
 \noindent\rule{\textwidth}{1pt}
 A.4 {\bf Solution:}\\
+\begin{enumerate}
+    \item See Plot 1 in Figure 2. 
+    \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.4\textwidth]{hw2/code/}
+            \caption{Problem A4}
+            \label{figure:a4}
+    \end{figure}
+
+\end{enumerate}
 \noindent\rule{\textwidth}{1pt}
 Bigger $\lambda$ results in more regularization, as we can see from the plots in Figure \ref{figure:a4}. See the code for both A.4 in A.5 after Figure \ref{figure:a5}
     \begin{figure}[h!]
