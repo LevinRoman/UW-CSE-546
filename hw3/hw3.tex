@@ -181,13 +181,15 @@ A.3 {\bf Solution:}\\
             \caption{Problem A3.d Bootstrap Confidence Intervals. Left: Polynomial kernel model, Right: Rbf kernel model.}
             \label{figure:a4}
         \end{figure}
-    \item Expected Squared Error Difference 90\% bootstrap CI: [0.028427236202594672, 0.078246629760424]. We see that zero is not inside this interval which suggests that rbf kernel is better for predicting $Y$ from $X$ since in 90\% of the bootstrap cases, we saw that the rbf kernel model expected error was lower than that of the polynomial kernel model. We also saw above that the polynomial kernel is very unstable.\\
+    \item Expected Squared Error Difference 90\% bootstrap CI: [0.028427236202594672, 0.078246629760424]. We see that zero is not inside this interval which suggests that rbf kernel is better for predicting $Y$ from $X$ since in 90\% of the bootstrap cases, we saw that the rbf kernel model expected error was lower than that of the polynomial kernel model. We also saw above that the polynomial kernel is very unstable.
+    \\
     \\
     See the code for this problem below.
 \end{enumerate}  
-\newpage
+
 \inputminted{python}{code/A3.py}
 \caption{Code for A3}\\
+
 \noindent\rule{\textwidth}{1pt}
 \\
 \subsection*{k-means clustering}
@@ -195,12 +197,20 @@ A.3 {\bf Solution:}\\
 \\
 A.4 {\bf Solution:}\\
 \begin{enumerate}
-    \item \begin{figure}[h!]
+    \item \inputminted{python}{code/A4.py}
+          \caption{Code for A4}
+    \item See Figure 5.
+        \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_poly.pdf}
-            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_rbf.pdf}
-            \caption{Problem A3.d Left: Polynomial kernel model, Right: Rbf kernel model}
-            \label{figure:a4}
+            \includegraphics[width=0.44\textwidth]{hw3/code/figures/A4b_obj.pdf}
+            \includegraphics[width=0.55\textwidth]{hw3/code/figures/A4b_centroids.pdf}
+            \caption{Problem A4.b Left: K-means Objective, Right: Centroids}
+        \end{figure}
+    \item
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.7\textwidth]{hw3/code/figures/A4c_.pdf}
+            \caption{Problem A4.c Training and Test Errors as a function of $k$}
         \end{figure}
 \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
@@ -232,148 +242,45 @@ B.1 {\bf Solution:}\\
     \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
 
+\subsection*{Neural Network for MNIST}
 \noindent\rule{\textwidth}{1pt}
 \\
-B.3 {\bf Solution:}\\
-\begin{enumerate}
-    \item 
-    \begin{itemize}
-        \item  Let's first show that the sum of convex functions is convex. Let $f,g$ be convex, consider $f(x) + g(x)$. Take any $\lambda \in [0,1]$, take any $x, y$. Then, by convexity of $f$ and $g$:
-        $$
-        f(\lambda x + (1-\lambda)y) + g(\lambda x + (1-\lambda)y) \le \lambda f(x) + (1-\lambda)f(y) + \lambda g(x) + (1-\lambda)g(y) = \lambda (f(x) + g(x)) + (1-\lambda)(f(y) + g(y)). \Box
-        $$
-        That is, $f(x) + g(x)$ is convex if $f(x)$ and $g(x)$ are convex. Now, a sum $\sum_{i=1}^n f_i(x)$ of $n$ convex functions $f_i(x)$ is also convex because by the above we can first show that $f_1(x) + f_2(x)$ is convex, that implies the convexity of $f_1(x) + f_2(x) + f_3(x)$, etc. At every step $j$, we know that $\sum_{i=1}^{j}f_i(x)$ is convex and $f_{j+1}(x)$ is also convex, so $\sum_{i=1}^{j+1}f_i(x)$ is convex. That is, by induction, it follows that $\sum_{i=1}^n f_i(x)$ is convex. $\Box$
-        \item Now, multiplication by $\lambda > 0$ obviously preserves convexity and thus $\lambda\|w\|$ is convex because $\|w\|$ is convex. To see that, take any $\alpha \in [0,1]$ and any $x,y$:
-        $$
-        \lambda\|\alpha x + (1-\alpha)y\| \le \lambda(\alpha\|x\| + (1-\alpha)\|y\|) = \alpha\lambda\|x\| + (1-\alpha)\lambda\|y\|
-        $$
-        \item Finally, since $l_i(w) \text{ are convex } \Rightarrow \sum_{i=1}^n l_i(w)$ is convex. As shown above, $\lambda \|w\|$ is convex too. So 
-        $\sum_{i=1}^n l_i(w) + \lambda \|w\|$ is convex as a sum of two convex functions. $\Box$
-    \end{itemize}
-    \item Because convexity implies that every local minimum is a global minimum. $\Box$
-\end{enumerate}   
-\noindent\rule{\textwidth}{1pt}
-
-
-\subsection*{Lasso}
-
-\noindent\rule{\textwidth}{1pt}
-A.4 {\bf Solution:}\\
-\begin{enumerate}
-    \item See Plot 1 in Figure 2 (left). Note that for this problem I treated numbers less than 1e-14 in absolute value as zeros.
-    \item See Plot 2 in Figure 2 (right). 
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.45\textwidth]{hw2/code/figures/A4a.pdf}
-            \includegraphics[width=0.45\textwidth]{hw2/code/figures/A4b.pdf}
-            \caption{Problem A4. Left: A4.a, Right: A4.b}
-            \label{figure:a4}
-        \end{figure}
-    \item From the plots we see, as expected, that greater $\lambda$ forces more weights to zero. That is, increasing $\lambda$ results in a more sparse solution. However, in Plot 2, we see that too large $\lambda$ results in zero solution which gives poor performance. If we use $\lambda$ which is too small, we end up in another extreme, where we have a high false discovery rate. One should choose $\lambda$ which is close to the upper left corner on Plot 2. (Probably, making this plot on a validation set would be a good idea too for choosing $\lambda$).
-\end{enumerate}
-\inputminted{python}{code/A4.py}
-\caption{Code for A4}
-\noindent\rule{\textwidth}{1pt}
-
-
-
-\noindent\rule{\textwidth}{1pt}
 A.5 {\bf Solution:}\\
 \begin{enumerate}
-    \item See Figure 3 (top left). 
-    \item See Figure 3 (top right). 
-    \item See Figure 3 (bottom).
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A5a.pdf}
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A5b.pdf}
-            \includegraphics[width=0.5\textwidth]{hw2/code/figures/A5c.pdf}
-            \caption{Problem A5. Top Left: A5.a, Top Right: A5.b, Bottom: A5.c}
-            \label{figure:a4}
-        \end{figure}
-    \item The most positive weight: {\bf PctIlleg}\\
-          The most negative weight: {\bf PctKids2Par}\\
-          That is, the crime rate has the most positive correlation with PctIlleg (percentage of kids born to never married). On the other hand side, the crime rate has the most negative correlation with PctKids2Par (percentage of kids in family housing with two parents).
-    \item Correlation is not the same with causality. Just because there are fewer people over 65 in the high crime areas, does not mean that the number of people over 65 decreases the crime rate. It could also mean that people over 65 tend to move out from high crime areas. Just like firetrucks don't cause fires. Seeing a fire truck is only correlated with seeing a burning building and it is the fire which causes the presence of a firetruck.
-
-\end{enumerate}
-
+    \item I trained the wide network with learning rate 0.001 and it converged in 18 epochs (achieved 99\% accuracy on the training data). The training loss after 18 training epochs is 0.0348, while the test loss is 0.0923 and test accuracy is 0.9730. Please, see the training plot (Figure 7). 
+    
+    \item I trained the deep network with learning rate 0.001 and it converged in 35 epochs (achieved 99\% accuracy on the training data). The training loss after 35 training epochs is 0.0310, while the test loss is 0.1302 and test accuracy is 0.9670. Please, see the training plot (Figure 7). 
+    
+    \item There are 26506 parameters for the deep network and 50890 parameters for the wide network. At the same time there is a tiny difference in test accuracies for wide and deep networks. On the one hand wide network required less epochs to converge, but on the other hand deep network has almost twice less trainable parameters which makes it computationally less expensive. 
+    
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.84\textwidth]{hw3/code/figures/A5.pdf}
+    \caption{Problem A5: Training plot for both wide and deep networks}
+\end{figure}
+\end{enumerate}   
 \inputminted{python}{code/A5.py}
-\caption{Code for A5}
-
+\caption{Code for A5}\\
 \noindent\rule{\textwidth}{1pt}
 
+\subsection*{PCA}
 \noindent\rule{\textwidth}{1pt}
+\\
 A.6 {\bf Solution:}\\
 \begin{enumerate}
-    \item Note that $\exp(-y_i(b+x_i^Tw)) = \frac{1}{\mu_i(w,b)} -1$. Then, $\nabla_w J(w,b) = \frac{1}{n}\sum_i \nabla_w \log(1+\exp(-y_i(b+x_i^Tw))) + \nabla_w \lambda \|w\|^2 = \frac{1}{n}\sum_i \mu_i(w, b)(\frac{1}{\mu_i(w,b)} -1)(-y_i)x_i + 2\lambda w$. So
+    \item The requested eigvals: [332719.12203544, 243279.88433819, 80808.47770154,  23685.72821113,  11035.29046611] \\
+The sum of eigvals: 3428445.433070634
+    \item $$
+    x^T \approx \mu^T + (x-\mu)^TV_kV_k^T, \text{  where columns of $V_k$ are the $k$  eigenvectors corresponding to the $k$ largest eigenvalues.}
     $$
-    \boxed{\nabla_w J(w,b) = \frac{1}{n}\sum_i (\mu_i(w, b) - 1)(y_i)x_i + 2\lambda w}
-    $$
-    Now, $\nabla_b J(w,b) = \frac{1}{n}\sum_i \nabla_b \log(1+\exp(-y_i(b+x_i^Tw))) + \nabla_b \lambda \|w\|^2 = \frac{1}{n}\sum_i \mu_i(w, b)(\frac{1}{\mu_i(w,b)} -1)(-y_i)$. So
-    $$
-    \boxed{\nabla_b J(w,b) = \frac{1}{n}\sum_i (\mu_i(w, b) - 1)y_i}
-    $$
-    \item See Figure 4. 
-        \begin{figure}[h!]
+    \item \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6b1.pdf}
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6b2.pdf}
-            \caption{Problem A6.b Left: A6.bi, Right: A6.bii (Plots for Gradient Descent)}
+            \includegraphics[width=0.44\textwidth]{hw3/code/figures/A.pdf}
+            \includegraphics[width=0.55\textwidth]{hw3/code/figures/A4b_centroids.pdf}
+            \caption{Problem A4.b Left: K-means Objective, Right: Centroids}
         \end{figure}
-    \item See Figure 5. 
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6c1.pdf}
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6c2.pdf}
-            \caption{Problem A6.c Left: A6.ci, Right: A6.cii (Plots for Stochastic Gradient Descent with batch 1.)}
-        \end{figure}
-        
-    \item See Figure 6.
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6d1.pdf}
-            \includegraphics[width=0.49\textwidth]{hw2/code/figures/A6d2.pdf}
-            \caption{Problem A6.d Left: A6.di, Right: A6.dii (Plots for Stochastic Gradient Descent with batch 100.)}
-        \end{figure}
-
-\end{enumerate}
-
-\inputminted{python}{code/A6.py}
-\caption{Code for A6}
-
+\end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
-
-
-
-
-
-
-\noindent\rule{\textwidth}{1pt}
-B.4 {\bf Solution:}\\
-\begin{enumerate}
-    \item No time to explain!:)
-    
-    
-    \item No time to explain!:)
-    
-    
-    \item For Multinomial Logistic Regression trained with L(W) the train accuracy is 0.9127 and test accuracy is 0.9158. For J(W) these values are 0.8490 and 0.8537 respectively. Both models were trained for 50 epochs with learning rate $l = 0.01$. 
-\end{enumerate}
-
-
-
-
-\inputminted{python}{code/B4.py}
-\caption{Code for B4}
-
-\noindent\rule{\textwidth}{1pt}
-
-
-
-
-
-
 
 
 
