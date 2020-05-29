@@ -1,3 +1,6 @@
+####################################
+#HW3, Problem A4
+####################################
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt 
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     plt.figure(figsize = (15,10))
     plt.plot(k_range, train_err, '-o', label = 'train_error')
     plt.plot(k_range, test_err, '-o', label = 'test_error')
-    plt.title('A4c: K-Means Objective')
+    plt.title('A4c: K-Means Errors')
     plt.legend()
     plt.xlabel('k')
     plt.ylabel('error')
