@@ -158,6 +158,7 @@ if __name__ == "__main__":
     def parts_abc(n, k_fold, names, bootstrap_iter):
         sns.set()
         #parts a and b
+        np.random.seed(19)
         X, y = generate_data(n)
 
         #Find the best params for poly kernel
@@ -167,13 +168,13 @@ if __name__ == "__main__":
         polyRidge = KernelRidgeRegression(k_poly)
 
         loo_scores_poly = CV(k_fold, polyRidge, X, y, lambda_range, d_range)
-        best_index = np.argmin(loo_scores_poly[:,0])
+        best_index_poly = np.argmin(loo_scores_poly[:,0])
 
         #Plot the results
-        print('Best LOO CV params for Polynomial Kernel:', loo_scores_poly[best_index])
+        print('Best LOO CV params for Polynomial Kernel:', loo_scores_poly[best_index_poly])
 
-        polyRidge.reg_lambda = loo_scores_poly[best_index][1]
-        polyRidge.kernel_hyperparam = loo_scores_poly[best_index][2]
+        polyRidge.reg_lambda = loo_scores_poly[best_index_poly][1]
+        polyRidge.kernel_hyperparam = loo_scores_poly[best_index_poly][2]
         polyRidge.fit(X, y)
         X_plot = np.linspace(0,1,100).reshape(-1,1)
         y_pred = polyRidge.predict(X_plot)
@@ -182,7 +183,8 @@ if __name__ == "__main__":
         plt.plot(X[args,0], y[args], 'o', label = 'data')
         plt.plot(X_plot[:,0], true_process(X_plot[:, 0]), '--', label = 'true_process (f)')
         plt.plot(X_plot[:,0], y_pred, '-o', label = 'predicted (f_hat_poly)')
-        plt.title('A3: Best Polynomial Kernel Params: lambda {} d {}'.format(loo_scores_poly[best_index][1], loo_scores_poly[best_index][2]))
+        plt.title('A3: Best Polynomial Kernel Params: lambda {} d {}'.format(
+            loo_scores_poly[best_index_poly][1], loo_scores_poly[best_index_poly][2]))
         plt.xlabel('x')
         plt.ylabel('f')
         plt.legend()
@@ -197,13 +199,13 @@ if __name__ == "__main__":
         rbfRidge = KernelRidgeRegression(k_rbf)
 
         loo_scores_rbf = CV(k_fold, rbfRidge, X, y, lambda_range, gamma_range)
-        best_index = np.argmin(loo_scores_rbf[:,0])
+        best_index_rbf = np.argmin(loo_scores_rbf[:,0])
 
         #Plot the results
-        print('Best LOO CV params for RBF Kernel:', loo_scores_rbf[best_index])
+        print('Best LOO CV params for RBF Kernel:', loo_scores_rbf[best_index_rbf])
 
-        rbfRidge.reg_lambda = loo_scores_rbf[best_index][1]
-        rbfRidge.kernel_hyperparam = loo_scores_rbf[best_index][2]
+        rbfRidge.reg_lambda = loo_scores_rbf[best_index_rbf][1]
+        rbfRidge.kernel_hyperparam = loo_scores_rbf[best_index_rbf][2]
         rbfRidge.fit(X, y)
         X_plot = np.linspace(0,1,100).reshape(-1,1)
         y_pred = rbfRidge.predict(X_plot)
@@ -212,7 +214,8 @@ if __name__ == "__main__":
         plt.plot(X[args,0], y[args], 'o', label = 'data')
         plt.plot(X_plot[:,0], true_process(X_plot[:, 0]), '--', label = 'true_process (f)')
         plt.plot(X_plot[:,0],y_pred, '-o', label = 'predicted (f_hat_rbf)')
-        plt.title('A3: Best RBF Kernel Params: lambda {} gamma {}'.format(loo_scores_rbf[best_index][1], loo_scores_rbf[best_index][2]))
+        plt.title('A3: Best RBF Kernel Params: lambda {} gamma {}'.format(
+            loo_scores_rbf[best_index_rbf][1], loo_scores_rbf[best_index_rbf][2]))
         plt.xlabel('x')
         plt.ylabel('f')
         plt.legend()
@@ -225,8 +228,8 @@ if __name__ == "__main__":
         #Poly kernel
         poly_CI_lower, poly_CI_upper, poly_fbs = Bootstrap_f(polyRidge, X, y, bootstrap_iter)
 
-        polyRidge.reg_lambda = loo_scores_poly[best_index][1]
-        polyRidge.kernel_hyperparam = loo_scores_poly[best_index][2]
+        polyRidge.reg_lambda = loo_scores_poly[best_index_poly][1]
+        polyRidge.kernel_hyperparam = loo_scores_poly[best_index_poly][2]
         polyRidge.fit(X, y)
         X_plot = np.linspace(0,1,100).reshape(-1,1)
         y_pred = polyRidge.predict(X_plot)
@@ -238,7 +241,8 @@ if __name__ == "__main__":
         plt.plot(X_plot[start:,0], y_pred[start:], '-', label = 'predicted (f_hat_poly)', color = 'C0')
         plt.plot(X_plot[start:,0], poly_CI_lower[start:], '-.', label = 'CI_lower', color = 'C0')
         plt.plot(X_plot[start:,0], poly_CI_upper[start:], '-.', label = 'CI_upper', color = 'C0')
-        plt.title('A3: 90% CI for the poly Model with lambda {} d {}'.format(loo_scores_poly[best_index][1], loo_scores_poly[best_index][2]))
+        plt.title('A3: 90% CI for the poly Model with lambda {} d {}'.format(
+            loo_scores_poly[best_index_poly][1], loo_scores_poly[best_index_poly][2]))
         plt.xlabel('x')
         plt.ylabel('f')
         plt.fill_between(X_plot[start:,0], poly_CI_lower[start:], poly_CI_upper[start:], alpha = 0.2, color = 'C0')
@@ -246,17 +250,20 @@ if __name__ == "__main__":
         plt.savefig('figures/A3' + names[1] + '_poly.pdf')
         plt.show()
 
-        start = 2
+        start = 0
+        end = None
         plt.figure(figsize = (15,10))
         plt.plot(X[args,0], y[args], 'o', label = 'data', color = 'green')
-        plt.plot(X_plot[start:,0], true_process(X_plot[:, 0])[start:], '--', label = 'true_process (f)', color = 'C1')
-        plt.plot(X_plot[start:,0], y_pred[start:], '-', label = 'predicted (f_hat_poly)', color = 'C0')
-        plt.plot(X_plot[start:,0], poly_CI_lower[start:], '-.', label = 'CI_lower', color = 'C0')
-        plt.plot(X_plot[start:,0], poly_CI_upper[start:], '-.', label = 'CI_upper', color = 'C0')
-        plt.title('A3: 90% CI for the poly Model with lambda {} d {} (omitting the first two points)'.format(loo_scores_poly[best_index][1], loo_scores_poly[best_index][2]))
+        plt.plot(X_plot[start:end, :], true_process(X_plot[:, 0])[start:end], '--', label = 'true_process (f)', color = 'C1')
+        plt.plot(X_plot[start:end, :], y_pred[start:end], '-', label = 'predicted (f_hat_poly)', color = 'C0')
+        plt.plot(X_plot[start:end, :], poly_CI_lower[start:end], '-.', label = 'CI_lower', color = 'C0')
+        plt.plot(X_plot[start:end, :], poly_CI_upper[start:end], '-.', label = 'CI_upper', color = 'C0')
+        plt.title('A3: 90% CI for the poly Model with lambda {} d {} (omitting several boundary points)'.format(
+            loo_scores_poly[best_index_poly][1], loo_scores_poly[best_index_poly][2]))
         plt.xlabel('x')
         plt.ylabel('f')
-        plt.fill_between(X_plot[start:,0], poly_CI_lower[start:], poly_CI_upper[start:], alpha = 0.2, color = 'C0')
+        plt.ylim((-10, 10))
+        plt.fill_between(X_plot[start:end,0], poly_CI_lower[start:end], poly_CI_upper[start:end], alpha = 0.2, color = 'C0')
         plt.legend()
         plt.savefig('figures/A3' + names[1] + '_poly_zoomed.pdf')
         plt.show()
@@ -264,8 +271,8 @@ if __name__ == "__main__":
         #Rbf kernel:
         rbf_CI_lower, rbf_CI_upper, rbf_fbs = Bootstrap_f(rbfRidge, X, y, bootstrap_iter)
 
-        rbfRidge.reg_lambda = loo_scores_rbf[best_index][1]
-        rbfRidge.kernel_hyperparam = loo_scores_rbf[best_index][2]
+        rbfRidge.reg_lambda = loo_scores_rbf[best_index_rbf][1]
+        rbfRidge.kernel_hyperparam = loo_scores_rbf[best_index_rbf][2]
         rbfRidge.fit(X, y)
         X_plot = np.linspace(0,1,100).reshape(-1,1)
         y_pred = rbfRidge.predict(X_plot)
@@ -277,7 +284,8 @@ if __name__ == "__main__":
         plt.plot(X_plot[start:,0], y_pred[start:], '-', label = 'predicted (f_hat_rbf)', color = 'C0')
         plt.plot(X_plot[start:,0], rbf_CI_lower[start:], '-.', label = 'CI_lower', color = 'C0')
         plt.plot(X_plot[start:,0], rbf_CI_upper[start:], '-.', label = 'CI_upper', color = 'C0')
-        plt.title('A3: 90% CI for the rbf Model with lambda {} gamma {}'.format(loo_scores_rbf[best_index][1], loo_scores_rbf[best_index][2]))
+        plt.title('A3: 90% CI for the rbf Model with lambda {} gamma {}'.format(
+            loo_scores_rbf[best_index_rbf][1], loo_scores_rbf[best_index_rbf][2]))
         plt.xlabel('x')
         plt.ylabel('f')
         plt.fill_between(X_plot[:,0], rbf_CI_lower[start:], rbf_CI_upper[start:], alpha = 0.2, color = 'C0')
