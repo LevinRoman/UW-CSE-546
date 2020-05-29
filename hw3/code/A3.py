@@ -1,3 +1,7 @@
+####################################
+#HW3, Problem A3
+####################################
+
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt 
@@ -96,7 +100,8 @@ def leave_one_out_CV(model, X, y, lambda_range, param_range):
     cv_scores = []
     for reg_lambda in lambda_range:
         for kernel_hyperparam in param_range:
-            cv_scores.append([loo_error(model, X, y, reg_lambda, kernel_hyperparam), reg_lambda, kernel_hyperparam])
+            cv_scores.append([loo_error(model, X, y, reg_lambda, 
+                kernel_hyperparam), reg_lambda, kernel_hyperparam])
     return np.array(cv_scores)
 
 def k_fold_cv_error(k, model, X, y, reg_lambda, kernel_hyperparam):
@@ -123,7 +128,8 @@ def CV(k_fold, model, X, y, lambda_range, param_range):
     cv_scores = []
     for reg_lambda in lambda_range:
         for kernel_hyperparam in param_range:
-            cv_scores.append([k_fold_cv_error(k_fold, model, X, y, reg_lambda, kernel_hyperparam), reg_lambda, kernel_hyperparam])
+            cv_scores.append([k_fold_cv_error(k_fold, model, X, y, 
+                reg_lambda, kernel_hyperparam), reg_lambda, kernel_hyperparam])
     return np.array(cv_scores)
 
 
@@ -148,7 +154,8 @@ def Bootstrap_exp_error_diff(polyRidge, rbfRidge, X, y, bootstrap_iter = 300):
         X_boot, y_boot = X[boot_idx], y[boot_idx]
         poly_yb_pred = polyRidge.predict(X_boot)
         rbf_yb_pred = rbfRidge.predict(X_boot)
-        exp_err_diffs.append(np.mean((y_boot - poly_yb_pred)**2 - (y_boot - rbf_yb_pred)**2))
+        exp_err_diffs.append(np.mean((y_boot - poly_yb_pred)**2 
+            - (y_boot - rbf_yb_pred)**2))
     CI_lower = np.percentile(exp_err_diffs, 5)
     CI_upper = np.percentile(exp_err_diffs, 95)
     return CI_lower, CI_upper
@@ -171,7 +178,8 @@ if __name__ == "__main__":
         best_index_poly = np.argmin(loo_scores_poly[:,0])
 
         #Plot the results
-        print('Best LOO CV params for Polynomial Kernel:', loo_scores_poly[best_index_poly])
+        print('Best LOO CV params for Polynomial Kernel:', 
+            loo_scores_poly[best_index_poly])
 
         polyRidge.reg_lambda = loo_scores_poly[best_index_poly][1]
         polyRidge.kernel_hyperparam = loo_scores_poly[best_index_poly][2]
@@ -237,15 +245,20 @@ if __name__ == "__main__":
         start = 0
         plt.figure(figsize = (15,10))
         plt.plot(X[args,0], y[args], 'o', label = 'data', color = 'green')
-        plt.plot(X_plot[start:,0], true_process(X_plot[:, 0])[start:], '--', label = 'true_process (f)', color = 'C1')
-        plt.plot(X_plot[start:,0], y_pred[start:], '-', label = 'predicted (f_hat_poly)', color = 'C0')
-        plt.plot(X_plot[start:,0], poly_CI_lower[start:], '-.', label = 'CI_lower', color = 'C0')
-        plt.plot(X_plot[start:,0], poly_CI_upper[start:], '-.', label = 'CI_upper', color = 'C0')
+        plt.plot(X_plot[start:,0], true_process(X_plot[:, 0])[start:], '--', 
+            label = 'true_process (f)', color = 'C1')
+        plt.plot(X_plot[start:,0], y_pred[start:], '-', 
+            label = 'predicted (f_hat_poly)', color = 'C0')
+        plt.plot(X_plot[start:,0], poly_CI_lower[start:], '-.', 
+            label = 'CI_lower', color = 'C0')
+        plt.plot(X_plot[start:,0], poly_CI_upper[start:], '-.', 
+            label = 'CI_upper', color = 'C0')
         plt.title('A3: 90% CI for the poly Model with lambda {} d {}'.format(
             loo_scores_poly[best_index_poly][1], loo_scores_poly[best_index_poly][2]))
         plt.xlabel('x')
         plt.ylabel('f')
-        plt.fill_between(X_plot[start:,0], poly_CI_lower[start:], poly_CI_upper[start:], alpha = 0.2, color = 'C0')
+        plt.fill_between(X_plot[start:,0], poly_CI_lower[start:], poly_CI_upper[start:], 
+            alpha = 0.2, color = 'C0')
         plt.legend()
         plt.savefig('figures/A3' + names[1] + '_poly.pdf')
         plt.show()
@@ -254,16 +267,21 @@ if __name__ == "__main__":
         end = None
         plt.figure(figsize = (15,10))
         plt.plot(X[args,0], y[args], 'o', label = 'data', color = 'green')
-        plt.plot(X_plot[start:end, :], true_process(X_plot[:, 0])[start:end], '--', label = 'true_process (f)', color = 'C1')
-        plt.plot(X_plot[start:end, :], y_pred[start:end], '-', label = 'predicted (f_hat_poly)', color = 'C0')
-        plt.plot(X_plot[start:end, :], poly_CI_lower[start:end], '-.', label = 'CI_lower', color = 'C0')
-        plt.plot(X_plot[start:end, :], poly_CI_upper[start:end], '-.', label = 'CI_upper', color = 'C0')
-        plt.title('A3: 90% CI for the poly Model with lambda {} d {} (omitting several boundary points)'.format(
+        plt.plot(X_plot[start:end, :], true_process(X_plot[:, 0])[start:end], '--', 
+            label = 'true_process (f)', color = 'C1')
+        plt.plot(X_plot[start:end, :], y_pred[start:end], '-', 
+            label = 'predicted (f_hat_poly)', color = 'C0')
+        plt.plot(X_plot[start:end, :], poly_CI_lower[start:end], '-.', 
+            label = 'CI_lower', color = 'C0')
+        plt.plot(X_plot[start:end, :], poly_CI_upper[start:end], '-.', 
+            label = 'CI_upper', color = 'C0')
+        plt.title('A3: 90% CI for the poly Model with lambda {} d {}'.format(
             loo_scores_poly[best_index_poly][1], loo_scores_poly[best_index_poly][2]))
         plt.xlabel('x')
         plt.ylabel('f')
         plt.ylim((-10, 10))
-        plt.fill_between(X_plot[start:end,0], poly_CI_lower[start:end], poly_CI_upper[start:end], alpha = 0.2, color = 'C0')
+        plt.fill_between(X_plot[start:end,0], poly_CI_lower[start:end], 
+            poly_CI_upper[start:end], alpha = 0.2, color = 'C0')
         plt.legend()
         plt.savefig('figures/A3' + names[1] + '_poly_zoomed.pdf')
         plt.show()
@@ -280,32 +298,40 @@ if __name__ == "__main__":
         start = 0
         plt.figure(figsize = (15,10))
         plt.plot(X[args,0], y[args], 'o', label = 'data', color = 'green')
-        plt.plot(X_plot[start:,0], true_process(X_plot[:, 0])[start:], '--', label = 'true_process (f)', color = 'C1')
-        plt.plot(X_plot[start:,0], y_pred[start:], '-', label = 'predicted (f_hat_rbf)', color = 'C0')
-        plt.plot(X_plot[start:,0], rbf_CI_lower[start:], '-.', label = 'CI_lower', color = 'C0')
-        plt.plot(X_plot[start:,0], rbf_CI_upper[start:], '-.', label = 'CI_upper', color = 'C0')
+        plt.plot(X_plot[start:,0], true_process(X_plot[:, 0])[start:], '--', 
+            label = 'true_process (f)', color = 'C1')
+        plt.plot(X_plot[start:,0], y_pred[start:], '-', 
+            label = 'predicted (f_hat_rbf)', color = 'C0')
+        plt.plot(X_plot[start:,0], rbf_CI_lower[start:], '-.', 
+            label = 'CI_lower', color = 'C0')
+        plt.plot(X_plot[start:,0], rbf_CI_upper[start:], '-.', 
+            label = 'CI_upper', color = 'C0')
         plt.title('A3: 90% CI for the rbf Model with lambda {} gamma {}'.format(
             loo_scores_rbf[best_index_rbf][1], loo_scores_rbf[best_index_rbf][2]))
         plt.xlabel('x')
         plt.ylabel('f')
-        plt.fill_between(X_plot[:,0], rbf_CI_lower[start:], rbf_CI_upper[start:], alpha = 0.2, color = 'C0')
+        plt.fill_between(X_plot[:,0], rbf_CI_lower[start:], 
+            rbf_CI_upper[start:], alpha = 0.2, color = 'C0')
         plt.legend()
         plt.savefig('figures/A3' + names[1] + '_rbf.pdf')
         plt.show()
         return polyRidge, rbfRidge
 
     #Run parts a,b,c:
-    parts_abc(n = 50, k_fold = 50, names = ['b', 'c'], bootstrap_iter = 300)
+    parts_abc(n = 50, k_fold = 50, names = ['b', 'c'], 
+        bootstrap_iter = 300)
 
     #Part d:
-    polyRidge, rbfRidge = parts_abc(n = 300, k_fold = 10, names = ['db', 'dc'], bootstrap_iter = 300)
+    polyRidge, rbfRidge = parts_abc(n = 300, k_fold = 10, 
+        names = ['db', 'dc'], bootstrap_iter = 300)
 
     #Part e:
     X_new, y_new = generate_data(1000) #generate m additional samples
-    err_CI_lower, err_CI_upper = Bootstrap_exp_error_diff(polyRidge, rbfRidge, X_new, y_new, bootstrap_iter = 300)
+    err_CI_lower, err_CI_upper = Bootstrap_exp_error_diff(polyRidge, 
+        rbfRidge, X_new, y_new, bootstrap_iter = 300)
 
     print('Expected Error Difference 90% CI:', [err_CI_lower, err_CI_upper])
-    #Expected Error Difference 90% CI: [0.0375219151004259, 0.12906511083264974]
+    #Expected Error Difference 90% CI: [0.028427236202594672, 0.078246629760424]
     #Does not contain zero -> RBF kernel is better!
 
 
