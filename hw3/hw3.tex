@@ -109,7 +109,7 @@ showstringspaces=false            %
 \setlength\parindent{0px}
 
 \begin{document}
-\title{Homework \#2}
+\title{Homework \#3}
 \author{\normalsize{Spring 2020, CSE 546: Machine Learning}\\
 \normalsize{\bf Roman Levin} \\
 \normalsize{\bf 1721898} \\
@@ -120,92 +120,70 @@ Collaborators: compared answers with Tyler Chen, Diya Sashidhar, Katherine Owens
 \subsection*{Conceptual Questions}
 \noindent\rule{\textwidth}{1pt}
 
-A.0 {\bf Solution:}\\
-\begin{enumerate}
-    \item {\bf No,} because there could be several perfectly correlated features, each with large positive weight (e.g. 'number of bathrooms' and 'number of showers'). If they are perfectly correlated, then either one could be removed without compromising the quality of the predictions.
-    \item Because of {\bf the shape of L1 and L2 norm balls (level sets)}. The L1 ball is more "spiky" (with sparse vertices) and therefore level sets of the original objective are more likely to intersect it at its sparse vertices (unlike in the case of L2) resulting in a sparse solution to the regularized problem. Also, L0 penalty explicitly penalizes the number of non-zero elements and, between $p = 2$ and $p = 1$, the latter is closer to $p = 0$, and thus L1 norm is a better proxy for L0 than L2 is.
-    \item Upside: promotes {\bf sparsity} even better than L1. Downside: {\bf non-convex}.
-    \item {\bf True}
-    \item Because {\bf in expectation it goes in the right direction.}
-    \item Advantage: one iteration of SGD {\bf is much less expensive computationally} compared to GD. Disadvantage: SGD requires {\bf more iterations} to reach the same error.
-\end{enumerate}
-
-\noindent\rule{\textwidth}{1pt}
-\subsection*{Convexity and Norms}
-\noindent\rule{\textwidth}{1pt}
 A.1 {\bf Solution:}\\
 \begin{enumerate}
-    \item First, let's prove the following (obvious) fact: $\forall a,b \in \R: |a + b| \le |a| + |b|$:
-    $$|a + b|^2 = a^2 + b^2 + 2ab \le a^2 + b^2 + 2|a||b| = (|a| + |b|)^2 \Rightarrow |a + b| \le |a| + |b| \text{  since  } |a + b|\ge 0, |a| + |b|\ge 0. \Box$$
-    Now, let's check the definition of the norm for L1 norm $f(x) = \sum_{i=1}^n |x_i|$:
-    \begin{itemize}
-        \item (Non-negativity): $f(x) \ge 0$ since $\forall i: |x_i| \ge 0$. Now, $|x_i| = 0$ iff $x_i = 0$, so $f(x) = 0$ iff $x = 0$. $\Box$
-        \item (Absolute scalability): $\forall a\in \R, x\in \R^n: f(ax) = \sum_{i=1}^n |ax_i| = \sum_{i=1}^n |a||x_i| = |a|f(x). \Box$
-        \item (Triangle inequality): $\forall x,y \in \R^n: f(x) + f(y) = \sum_{i=1}^n |x_i| + \sum_{i=1}^n |y_i| = \sum_{i=1}^n |x_i| + |y_i| \ge \sum_{i=1}^n |x_i + y_i| = f(x+y)$, where the second to last inequality follows from the triangle inequality for absolute values on $\R$ above. $\Box$
-    \end{itemize}
-    \item Consider $x = [0, 1]^T, y = [1, 0]^T$. Then $g(x) + g(y) = 1^2 + 1^2 = 2, g(x+y) = (1 + 1)^2 = 4$, so for these $x,y$: $g(x+y) > g(x) + g(y)$ and the triangle inequality does not hold which means $g$ is not a norm. $\Box$
-    
+    \item {\bf True} (yes, since only $k$ eigenvalues of the covariance matrix are nonzero)
+    \item {\bf False} (SVM just maximizes the margin, it does not mean the generalization error is optimal among linear models)
+    \item {\bf True} (since the bootstrap sampling is with replacement)
+    \item {\bf False} (the columns of $V$ are the eigenvectors, not the rows)
+    \item {\bf False} (not necessarily, new PCA coordinates could sometimes be very uninterpretable)
+    \item {\bf False} ($k=n$ where $n$ is the number of samples results in zero objective and in only one point belonging to each cluster giving no new insights into the data)
+    \item {\bf Decrease $\sigma$} (Decreasing $\sigma$ makes the model more expressive.)
 \end{enumerate}
 
 \noindent\rule{\textwidth}{1pt}
-
-
-\noindent\rule{\textwidth}{1pt}
-B.1 {\bf Solution:}\\
-\begin{itemize}
-    \item Note that $\max_i (|x_i|^2) = (\max_i |x_i|)^2$ since $|x_i| \ge 0$. Now 
-    $$
-    \|x\|_2^2 = \sum_i|x_i|^2 \ge \max_i (|x_i|^2) = (\max_i |x_i|)^2 = \|x\|^2_{\infty} \Leftrightarrow \|x\|_2 \ge \|x\|_{\infty} \text{  since  } \|x\|_2\ge0, \|x\|_{\infty}\ge0.
-    $$
-    \item $\|x\|_1^2 = (\sum_i |x_i|)^2 = \sum_i |x_i|^2 + \underbrace{\sum_{i\not=j} |x_i||x_j|}_{\ge 0} \ge \sum_i |x_i|^2 = \|x\|_2^2 \Leftrightarrow \|x\|_1 \ge \|x\|_2$ since $\|x\|_2\ge0, \|x\|_1\ge0$
-    \item That is, $\boxed{\|x\|_1 \ge \|x\|_2 \ge \|x\|_{\infty}. \Box}$
-\end{itemize}
-\noindent\rule{\textwidth}{1pt}
-
+\subsection*{Kernels and the Bootstrap}
 \noindent\rule{\textwidth}{1pt}
 A.2 {\bf Solution:}\\
-\begin{itemize}
-    \item {\bf I is not convex}: line segment between points $b$ and $c$ is not in the set, while the points are. 
-    \item {\bf II is convex.} 
-    \item {\bf III is not convex}: line segment between points $d$ and $a$ is not in the set, while the points are.
-\end{itemize}
+By definition of $\phi(x)$, we have:
+$$
+\boxed{\phi(x)\phi(x') = \sum_{i=0}^\infty \frac{1}{\sqrt{i!}}e^{-\frac{x^2}{2}}x^i \frac{1}{\sqrt{i!}}e^{-\frac{x'^2}{2}}x'^i =  e^{-\frac{x^2+x'^2}{2}}\sum_{i=0}^\infty \frac{1}{i!}(xx')^i = e^{-\frac{x^2+x'^2}{2}}e^{xx'} = e^{-\frac{(x-x')^2}{2}} \qquad \Box}
+$$
 \noindent\rule{\textwidth}{1pt}
 
 \noindent\rule{\textwidth}{1pt}
 \\
 A.3 {\bf Solution:}\\
 \begin{enumerate}
-    \item {\bf I is convex} on $[a,c[$.
-    \item {\bf II is not convex} on $[a,c]$: for $\lambda = 1/2$: $f(\lambda b + (1-\lambda)c) > \lambda f(b) + (1-\lambda)f(c)$. 
-    \item {\bf III is convex} on $[a,d]$: for $\lambda = 1/2$: $f(\lambda a + (1-\lambda)c) > \lambda f(a) + (1-\lambda)f(c)$
-    \item {\bf III is convex} on $[c,d]$.
+    \item 
 \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
 
 \noindent\rule{\textwidth}{1pt}
 \\
-B.2 {\bf Solution:}\\
+
+\noindent\rule{\textwidth}{1pt}
+\\
+A.4 {\bf Solution:}\\
 \begin{enumerate}
-    \item We will show convexity by definition. Take any $\lambda \in [0,1]$. Note that $(1-\lambda) \in [0,1]$. Then, taking any $x, y \in \R^n$, by triangle inequality and absolute scalability:
-    $$
-    \|\lambda x + (1-\lambda)y\| \le \|\lambda x\| + \|(1-\lambda)y\| \le \lambda\|x\| + (1-\lambda)\|y\| \Box.
-    $$
-    \item $B := \{x \in \R^n: \|x\| \le 1\}$. Take any $\lambda \in [0,1]$ and any $x,y \in B$. Then (using derivations in a.):
-    $$
-    \|\lambda x + (1-\lambda)y\| \le \lambda\underbrace{\|x\|}_{\le 1 \text{ for } x \in B} + (1-\lambda)\underbrace{\|y\|}_{\le 1 \text{ for } y \in B} \le \lambda + 1 - \lambda = 1 \Rightarrow \lambda x + (1-\lambda)y \in B 
-    $$
-    So $B$ is indeed a convex set. $\Box$
-    \item The plot of $L:=\{(x,y): g(x,y) \le 4\}$, where $g(x,y) = (|x|^{1/2} + |y|^{1/2})^2$ is on Figure 1. This set is not convex because for $\lambda = 0.5$ and points $x = [0,-4]^T, y =[4,0]^T, x,y \in L$:
-    $$\lambda x + (1-\lambda)y \not\in L \Box$$
-    
-   
-    \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.4\textwidth]{hw2/b2.png}
-            \caption{Plot of $\{(x,y): g(x,y) \le 4\}$, where $g(x,y) = (|x|^{1/2} + |y|^{1/2})^2$}
-            \label{figure:B2}
-    \end{figure}
+    \item 
 \end{enumerate}   
+\noindent\rule{\textwidth}{1pt}
+
+\noindent\rule{\textwidth}{1pt}
+\\
+B.1 {\bf Solution:}\\
+\begin{enumerate}
+    \item Using the fact that $R(f) > \epsilon$. Using the definitions and the fact that the expectation of an indicator of an event is the probability of the event and using the fact that samples are iid:
+    \begin{align}
+    & \P(\hat{R}_n(f) = 0) = \P(\frac{1}{n}\sum_{i=1}^n \I(f(x_i) \not = y_i)) = \P(\forall i: f(x_i) = y_i) = \prod_{i=1}^n \P(f(x_i)=y_i) =  \prod_{i=1}^n (1-\P(f(x_i)\not = y_i)) =  \\
+    &= (1-\P(f(x_1)\not = y_1))^n = (1 - \E_{XY}[\I(f(X) \not = Y)])^n = (1 - R(f))^n \le (1-\epsilon)^n \le e^{-n\epsilon} \qquad \Box
+    \end{align}
+    \item For every $f \in \mathcal{F}$, define $A_f = \{R(f)>\epsilon \text{ and } \hat{R}_n(f) = 0 \}$. Note that $\P(\{R(f)>\epsilon \text{ and } \hat{R}_n(f) = 0 \}) = \P(\hat{R}_n(f) = 0|R(f)>\epsilon)\P(R(f)>\epsilon) \le \P(\hat{R}_n(f) = 0|R(f)>\epsilon)$ and that $\forall f \quad \P(A_f) \le e^{-\epsilon n}$ follows from a. Then:
+    $$
+    \P(\exists f \in \mathcal{F}: R(f) > \epsilon \text{ and } \hat{R}_n(f) = 0) \le \P(\cup_{f \in \mathcal{F}} A_f) \le \sum_{f \in \mathcal{F}} \P(A_f) \le |\mathcal{F}|e^{-\epsilon n} \qquad \Box
+    $$
+    \item $$
+    |\mathcal{F}|e^{-\epsilon n} \le \delta \Leftrightarrow \epsilon \ge \frac{1}{n}\log \frac{\mathcal{|F|}}{\delta} \Rightarrow \boxed{\epsilon^* = \frac{1}{n}\log \frac{\mathcal{|F|}}{\delta}}
+    $$
+    \item Note: B1.d is a vaguely worded question. To solve it, let $A$ and $B$ be two boolean events. Then $A \Rightarrow B$ is also a boolean event. Taking into account the truth table for $A \Rightarrow B$, observe $\P(\{A \Rightarrow B \text{ is true}\}) = 1 - \P(\{A \text{ is true}\}  \cap \{B  \text{ is false}\})$. For short,  $\P(A \Rightarrow B) = 1 - \P(A \cap \neg B)$. Now, take $A = \{\hat{R}_n(f) = 0\}$ and $B = \{R(f) - R(f^*) \le \frac{1}{n}\log \frac{\mathcal{|F|}}{\delta}\} =c $ (omitting hats over $f$ for brevity since any function with zero empirical risk automatically becomes its argmin, since the empirical risk is non-negative). Finally, for $A$ and $B$ defined above (and since $R(f^*) \ge 0$) and using previous parts:
+    \begin{align}
+        &\P(A \Rightarrow B) = 1 - \P(A \cap \neg B) = 1 - \P(\hat{R}_n(f) = 0 \text{ and } R(f) - R(f^*) > \epsilon^*) \ge \\
+        & \ge 1 - \P(\hat{R}_n(f) = 0 \text{ and } R(f) > \epsilon^*) \ge
+        1 - \P(\exists f \in \mathcal{F}: R(f) > \epsilon^* \text{ and } \hat{R}_n(f) = 0) \ge \\
+        &\ge 1 - |\mathcal{F}|e^{-\epsilon^* n} \ge 1 - \delta \qquad \Box
+    \end{align}
+    \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
 
 \noindent\rule{\textwidth}{1pt}
