@@ -145,8 +145,8 @@ $$
 \\
 A.3 {\bf Solution:}\\
 \begin{enumerate}
-    \item Best polynomial kernel parameters: $\lambda = 0.0001, d=15.0$\\
-    Best rbf kernel parameters: $\lambda = 0.001, \gamma = 2.3683371362791203$
+    \item Best polynomial kernel parameters: $\lambda = 0.001, d = 17.0$\\
+    Best rbf kernel parameters: $\lambda = 0.0001, \gamma = 5.340266090876008$
     \item See Figure 1.
         \begin{figure}[h!]
             \centering
@@ -161,23 +161,51 @@ A.3 {\bf Solution:}\\
             \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3c_poly.pdf}
             \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3c_rbf.pdf}
             \includegraphics[width=0.6\textwidth]{hw3/code/figures/A3c_poly_zoomed.pdf}
-            \caption{Problem A3.c Top Left: Polynomial kernel model, Top Right: Rbf kernel model, Bottom: Zoomed-in version of the polynomial kernel graph, since on the boundaries it is very unstable. The parameters changed a little }
+            \caption{Problem A3.c Bootstrap Confidence Intervals. Top Left: Polynomial kernel model, Top Right: Rbf kernel model, Bottom: Zoomed-in version of the polynomial kernel graph, since on the boundaries it is very unstable.}
+            \label{figure:a4}
+        \end{figure}
+    \item Best polynomial kernel parameters for $n=300$: $\lambda = 0.001 d = 16.0$\\
+    Best rbf kernel parameters for $n=300$: $\lambda = 0.01, \gamma =  5.131332212328231$\\
+    See Figures 3 and 4.
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_poly.pdf}
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_rbf.pdf}
+            \caption{Problem A3.d Left: Polynomial kernel model, Right: Rbf kernel model}
+            \label{figure:a4}
+        \end{figure}
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3dc_poly.pdf}
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3dc_rbf.pdf}
+            \caption{Problem A3.d Bootstrap Confidence Intervals. Left: Polynomial kernel model, Right: Rbf kernel model.}
+            \label{figure:a4}
+        \end{figure}
+    \item Expected Squared Error Difference 90\% bootstrap CI: [0.028427236202594672, 0.078246629760424]. We see that zero is not inside this interval which suggests that rbf kernel is better for predicting $Y$ from $X$ since in 90\% of the bootstrap cases, we saw that the rbf kernel model expected error was lower than that of the polynomial kernel model. We also saw above that the polynomial kernel is very unstable.\\
+    \\
+    See the code for this problem below.
+\end{enumerate}  
+\newpage
+\inputminted{python}{code/A3.py}
+\caption{Code for A3}\\
+\noindent\rule{\textwidth}{1pt}
+\\
+\subsection*{k-means clustering}
+\noindent\rule{\textwidth}{1pt}
+\\
+A.4 {\bf Solution:}\\
+\begin{enumerate}
+    \item \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_poly.pdf}
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A3db_rbf.pdf}
+            \caption{Problem A3.d Left: Polynomial kernel model, Right: Rbf kernel model}
             \label{figure:a4}
         \end{figure}
 \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
 
-\noindent\rule{\textwidth}{1pt}
-\\
-
-\noindent\rule{\textwidth}{1pt}
-\\
-A.4 {\bf Solution:}\\
-\begin{enumerate}
-    \item 
-\end{enumerate}   
-\noindent\rule{\textwidth}{1pt}
-
+\subsection*{Intro to Sample Complexity}
 \noindent\rule{\textwidth}{1pt}
 \\
 B.1 {\bf Solution:}\\
