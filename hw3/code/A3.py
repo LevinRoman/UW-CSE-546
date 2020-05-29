@@ -158,7 +158,6 @@ if __name__ == "__main__":
     def parts_abc(n, k_fold, names, bootstrap_iter):
         sns.set()
         #parts a and b
-        np.random.seed(8)
         X, y = generate_data(n)
 
         #Find the best params for poly kernel
