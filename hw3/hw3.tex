@@ -164,7 +164,7 @@ A.3 {\bf Solution:}\\
             \caption{Problem A3.c Bootstrap Confidence Intervals. Top Left: Polynomial kernel model, Top Right: Rbf kernel model, Bottom: Zoomed-in version of the polynomial kernel graph, since on the boundaries it is very unstable.}
             \label{figure:a4}
         \end{figure}
-    \item Best polynomial kernel parameters for $n=300$: $\lambda = 0.001 d = 16.0$\\
+    \item Best polynomial kernel parameters for $n=300$: $\lambda = 0.001, d = 16.0$\\
     Best rbf kernel parameters for $n=300$: $\lambda = 0.01, \gamma =  5.131332212328231$\\
     See Figures 3 and 4.
         \begin{figure}[h!]
@@ -181,7 +181,7 @@ A.3 {\bf Solution:}\\
             \caption{Problem A3.d Bootstrap Confidence Intervals. Left: Polynomial kernel model, Right: Rbf kernel model.}
             \label{figure:a4}
         \end{figure}
-    \item Expected Squared Error Difference 90\% bootstrap CI: [0.028427236202594672, 0.078246629760424]. We see that zero is not inside this interval which suggests that rbf kernel is better for predicting $Y$ from $X$ since in 90\% of the bootstrap cases, we saw that the rbf kernel model expected error was lower than that of the polynomial kernel model. We also saw above that the polynomial kernel is very unstable.
+    \item Expected Squared Error Difference 90\% bootstrap CI: [0.028427236202594672, 0.078246629760424]. We see that zero is not inside this interval which suggests that rbf kernel is better for predicting $Y$ from $X$ since in 90\% of the bootstrap cases, we saw that the rbf kernel model average error was lower than that of the polynomial kernel model. We also saw above that the polynomial kernel is very unstable.
     \\
     \\
     See the code for this problem below.
@@ -247,16 +247,28 @@ B.1 {\bf Solution:}\\
 \\
 A.5 {\bf Solution:}\\
 \begin{enumerate}
-    \item I trained the wide network with learning rate 0.001 and it converged in 18 epochs (achieved 99\% accuracy on the training data). The training loss after 18 training epochs is 0.0348, while the test loss is 0.0923 and test accuracy is 0.9730. Please, see the training plot (Figure 7). 
+    \item The wide network was trained using Adam with learning rate 0.001 and converged in 18 epochs (achieved 99\% accuracy on the training data). After 18 training epochs we got the following results:
+    \begin{itemize}
+        \item Training loss: {\bf 0.0348}
+        \item Test loss: {\bf 0.0923}
+        \item Test accuracy: {\bf 0.9730}
+    \end{itemize}
+    See Figure 7 for the training plot. 
     
-    \item I trained the deep network with learning rate 0.001 and it converged in 35 epochs (achieved 99\% accuracy on the training data). The training loss after 35 training epochs is 0.0310, while the test loss is 0.1302 and test accuracy is 0.9670. Please, see the training plot (Figure 7). 
+    \item The deep network was trained using Adam with learning rate 0.001 and converged in 35 epochs (achieved 99\% accuracy on the training data). After 35 training epochs we got the following results:
+    \begin{itemize}
+        \item Training loss: {\bf 0.0310}
+        \item Test loss: {\bf 0.1302}
+        \item Test accuracy: {\bf 0.9670}
+    \end{itemize}
+    See Figure 7 for the training plot. 
     
-    \item There are 26506 parameters for the deep network and 50890 parameters for the wide network. At the same time there is a tiny difference in test accuracies for wide and deep networks. On the one hand wide network required less epochs to converge, but on the other hand deep network has almost twice less trainable parameters which makes it computationally less expensive. 
+    \item There are {\bf 26506} parameters for the deep network and {\bf 50890} parameters for the wide network. At the same time there is a tiny difference in test accuracy for wide and deep networks. Even though wide network required less epochs to converge, deep network has almost twice fewer trainable parameters which makes it computationally less expensive. Therefore, I would say the deep network is better. Even though the one-hidden-layer network is already a universal function approximator, that one layer requires much more trainable parameters than a deep network.
     
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.84\textwidth]{hw3/code/figures/A5.pdf}
-    \caption{Problem A5: Training plot for both wide and deep networks}
+    \includegraphics[width=0.84\textwidth]{hw3/code/figures/A5_training_plots.pdf}
+    \caption{Problem A5 a and b: Training plot for both wide and deep networks}
 \end{figure}
 \end{enumerate}   
 \inputminted{python}{code/A5.py}
