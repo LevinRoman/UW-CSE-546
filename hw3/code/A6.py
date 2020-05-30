@@ -1,5 +1,5 @@
 ####################################
-#HW3, Problem A4
+#HW3, Problem A6
 ####################################
 import numpy as np
 import scipy

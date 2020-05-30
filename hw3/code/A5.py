@@ -1,24 +1,30 @@
+####################################
+#HW3, Problem A5
+####################################
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt 
+import seaborn as sns
 import torch
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from tqdm import tqdm
 import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 to_tensor = transforms.ToTensor()
 
-mnist_trainset = datasets.MNIST(root='./data', train=True, download=True, transform=to_tensor)
-mnist_testset = datasets.MNIST(root='./data', train=False, download=True, transform=to_tensor)
-train_loader = torch.utils.data.DataLoader(mnist_trainset,
-										  batch_size=128,
-										  shuffle=True)
-test_loader = torch.utils.data.DataLoader(mnist_testset,
-										  batch_size=128,
-										  shuffle=True)
+mnist_trainset = datasets.MNIST(
+	root='./data', train=True, download=True, transform=to_tensor)
+mnist_testset = datasets.MNIST(
+	root='./data', train=False, download=True, transform=to_tensor)
+train_loader = torch.utils.data.DataLoader(
+	mnist_trainset,batch_size=128,shuffle=True)
+test_loader = torch.utils.data.DataLoader(
+	mnist_testset,batch_size=128, shuffle=True)
 
 
-def compute_accuracy(data_loader, net_type, W0=None, W1=None, W2=None, b0=None, b1=None, b2=None):
+def compute_accuracy(test_loader, net_type, W0=None, W1=None, W2=None, b0=None, b1=None, b2=None):
 	acc = 0
 	loss = 0
 	for inputs, labels in tqdm(iter(test_loader)):
@@ -54,7 +60,7 @@ def deep_network(input, W0, W1, W2, b0, b1, b2):
 
 
 def train_wide_network(data_loader, l, num_epochs, n_neurons = 64, input_dim = 784):
-	# initialize parameters randomely
+	# initialize parameters randomly
 	alpha = 1/np.sqrt(input_dim)
 	W0 = -2*alpha* torch.rand(n_neurons, input_dim) + alpha
 	W0.requires_grad = True
@@ -72,7 +78,7 @@ def train_wide_network(data_loader, l, num_epochs, n_neurons = 64, input_dim = 7
 		acc = 0
 		loss_array.append(0)
 		# iterate through batches
-		for inputs, labels in tqdm(iter(train_loader)):
+		for inputs, labels in tqdm(iter(data_loader)):
 			# flatten images
 			inputs = torch.flatten(inputs, start_dim=1, end_dim=3)
 			# compute predictions
@@ -97,7 +103,7 @@ def train_wide_network(data_loader, l, num_epochs, n_neurons = 64, input_dim = 7
 
 
 def train_deep_network(data_loader, l, num_epochs, n_neurons = 32, input_dim = 784):
-	# initialize parameters randomely
+	# initialize parameters randomly
 	alpha = 1/np.sqrt(input_dim)
 	W0 = -2*alpha* torch.rand(n_neurons, input_dim) + alpha
 	W0.requires_grad = True
@@ -119,7 +125,7 @@ def train_deep_network(data_loader, l, num_epochs, n_neurons = 32, input_dim = 7
 		loss_array.append(0)
 		acc = 0
 		# iterate through batches
-		for inputs, labels in tqdm(iter(train_loader)):
+		for inputs, labels in tqdm(iter(data_loader)):
 			# flatten images
 			inputs = torch.flatten(inputs, start_dim=1, end_dim=3)
 			# compute predictions
@@ -145,26 +151,32 @@ def train_deep_network(data_loader, l, num_epochs, n_neurons = 32, input_dim = 7
 
 if __name__ == '__main__':
 
-	loss_array_wide, W0, W1, b0, b1 = train_wide_network(train_loader, 0.001, 500, n_neurons = 64, input_dim = 784)
-	test_acc, test_loss = compute_accuracy(test_loader, net_type ='wide', W0=W0, W1=W1, W2=None, b0=b0, b1=b1, b2=None)
+	#Wide net:
+	loss_array_wide, W0, W1, b0, b1 = train_wide_network(train_loader, 0.001, 500, 
+		n_neurons = 64, input_dim = 784)
+	test_acc, test_loss = compute_accuracy(test_loader, net_type ='wide', 
+		W0=W0, W1=W1, W2=None, b0=b0, b1=b1, b2=None)
 	print('Test accuracy for wide network is', test_acc)
 	print('Test loss for wide network is', test_loss)
 
-	number_parameters_wide = np.prod(W0.shape) + np.prod(W1.shape) + np.prod(b0.shape) + np.prod(b1.shape)
+	number_parameters_wide = np.prod(W0.shape) + np.prod(
+		W1.shape) + np.prod(b0.shape) + np.prod(b1.shape)
 	print('Number of parameters for wide network', number_parameters_wide)
 
-	loss_array_deep, W0, W1, W2, b0, b1, b2 = train_deep_network(train_loader, 0.001, 500, n_neurons = 32, input_dim = 784)
-	test_acc, test_loss = compute_accuracy(test_loader, net_type ='deep', W0=W0, W1=W1, W2=W2, b0=b0, b1=b1, b2=b2)
+	#Deep net:
+	loss_array_deep, W0, W1, W2, b0, b1, b2 = train_deep_network(
+		train_loader, 0.001, 500, n_neurons = 32, input_dim = 784)
+	test_acc, test_loss = compute_accuracy(
+		test_loader, net_type ='deep', W0=W0, W1=W1, W2=W2, b0=b0, b1=b1, b2=b2)
 	print('Test accuracy for deep network is', test_acc)
 	print('Test loss for deep network is', test_loss)
 
-	number_parameters_deep = np.prod(W0.shape) + np.prod(W1.shape) + np.prod(W2.shape) + np.prod(b0.shape) + np.prod(b1.shape) + np.prod(b2.shape)
+	number_parameters_deep = np.prod(W0.shape) + np.prod(W1.shape) + np.prod(
+		W2.shape) + np.prod(b0.shape) + np.prod(b1.shape) + np.prod(b2.shape)
 	print('Number of parameters for deep network', number_parameters_deep)
 
 
-
-
-	## figure
+	#Plot the results
 	x_plot_wide = range(len(loss_array_wide))
 	x_plot_deep = range(len(loss_array_deep))
 	plt.figure(figsize = (15,10))
@@ -174,6 +186,6 @@ if __name__ == '__main__':
 	plt.legend()
 	plt.xlabel('epoch')
 	plt.ylabel('error')
-	#plt.savefig('figures/A4c_.pdf')
+	plt.savefig('figures/A5_training_plots.pdf')
 	plt.show()
 
