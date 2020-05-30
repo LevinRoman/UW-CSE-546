@@ -273,11 +273,26 @@ The sum of eigvals: 3428445.433070634
     \item $$
     x^T \approx \mu^T + (x-\mu)^TV_kV_k^T, \text{  where columns of $V_k$ are the $k$  eigenvectors corresponding to the $k$ largest eigenvalues.}
     $$
-    \item \begin{figure}[h!]
+    \item See Figure 8.
+        \begin{figure}[h!]
             \centering
-            \includegraphics[width=0.44\textwidth]{hw3/code/figures/A.pdf}
-            \includegraphics[width=0.55\textwidth]{hw3/code/figures/A4b_centroids.pdf}
-            \caption{Problem A4.b Left: K-means Objective, Right: Centroids}
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A6c_errors.pdf}
+            \includegraphics[width=0.49\textwidth]{hw3/code/figures/A6c_variance.pdf}
+            \caption{Problem A6.c Left: Reconstruction errors, Right: The amount of unexplained variance.}
+        \end{figure}
+    \item See Figure 9. Looks like the eigenvectors are capturing some basic shapes commonly present in digits. That is, the leading PCA eigenmode (PCA Mode 0) seems to capture ovals like those in zeros. The second leading PCA eigenmode (PCA Mode 1) captures edges similar to those present in 4 and 9, the third eigenmode (PCA Mode 2) seems to be related to 8 and 3, etc.
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.8\textwidth]{hw3/code/figures/A6d_modes.pdf}
+            \caption{Problem A6.d: The top 10 leading PCA eigenmodes.}
+        \end{figure}
+    \item See Figure 10. Of course, we see that the more eigenmodes we use for reconstruction -- the better quality reconstructions we get, that is, the higher-rank approximations are more accurate which is expected. However, we can also see that the reconstructions for as few as 40 eigenmodes is already decent for all the digits, even though we only use 40 out of 784 eigenmodes. For 7, even 5 eigenmodes are already capturing the digit well.
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=0.8\textwidth]{hw3/code/figures/A6e_2.pdf}
+            \includegraphics[width=0.8\textwidth]{hw3/code/figures/A6e_6.pdf}
+            \includegraphics[width=0.8\textwidth]{hw3/code/figures/A6e_7.pdf}
+            \caption{Problem A6.e: Reconstruction for different k. The originals are on the left. Top: Reconstructions for 2. Middle: Reconstructions for 6. Bottom: Reconstructions for 7.}
         \end{figure}
 \end{enumerate}   
 \noindent\rule{\textwidth}{1pt}
