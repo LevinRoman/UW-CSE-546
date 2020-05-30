@@ -80,7 +80,7 @@ class K_Means:
 
     def predict(self, X):
         """
-        Use the trained model to predict values for each instance in X
+        For every point in a set, return the nearest cetroid
         Arguments:
             X is a n-by-d numpy array
         Returns:
