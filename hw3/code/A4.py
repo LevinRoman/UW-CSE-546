@@ -80,11 +80,11 @@ class K_Means:
 
     def predict(self, X):
         """
-        For every point in a set, return the nearest cetroid
+        For every point in a set, return the nearest centroid
         Arguments:
             X is a n-by-d numpy array
         Returns:
-            an n-by-1 numpy array of the predictions
+            an n-by-d numpy array with centroids
         """
         dist = np.zeros((len(X),self.k))
         for i in range(self.k):
